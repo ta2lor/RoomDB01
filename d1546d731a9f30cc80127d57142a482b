@@ -1,0 +1,525 @@
+<!DOCTYPE HTML>
+<html>
+<head profile="http://www.w3.org/2005/10/profile">
+<title>SAILOR 800 VSAT Ku</title>
+
+<link type="text/css" rel="stylesheet" href="css/style.css"/>
+
+<link rel="shortcut icon" href="images/favicon.ico"/>
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+<meta http-equiv="PRAGMA" content="NO-CACHE"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="Author" content="Thrane &amp; Thrane"/>
+<meta name="copyright" content="Thrane &amp; Thrane 2010"/>
+<!--[if IE 7]>
+<link type="text/css" rel="stylesheet" href="/css/ie7.css?1524407287"/>
+<script type="text/javascript" src="/js/lib/json2_lib.js?1524407287"></script>
+<![endif]-->
+<script type="text/javascript" src="js/lib/jquery-1.11.1ec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/libacuec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/reboot_handlerec9a.js?1524407287"></script>
+
+<script type="text/javascript" src="js/ajax_requestsec9a.js?1524407287"></script>
+<script type="text/javascript">
+json_status = {"adu":{"rssi_blocks":7,"tx_blocks":4},"status":"Tracking","dual":{"enabled":1,"status":"Slave: Active"},"dep_status":"Deployed","events":0};
+syscfg = {"sys_type":{"mvsat":{}},"rf":{"ku":{}},"dual":{},"motors":{"azi":{},"ele":{},"xele":{},"pol":{}},"xim":{},"heading":{},"modem":{},"statistics":{}};
+</script>
+<script>
+    $(function(){
+        var cnt=1;
+        timer = setInterval(function(){
+            $.ajax({
+                type:"GET",
+                url:"/gps.xml",
+                dataType:"xml",
+                success: function(xml){
+                    var para = $(xml).find("para").text();
+                    var tmp = para.split("$");
+                    var cont = "";
+                    
+                    var pos = document.getElementById("gnss_position");
+                    
+                    var a = tmp[cnt].split(",");
+                    cont = (a[2]/100).toFixed(2)+"°" + a[3] +" "+(a[4]/100).toFixed(3)+"°"+a[5];
+                    pos.innerHTML = cont; 
+                }
+            })
+            cnt+=3;
+        }, 3000)
+    })
+</script>
+<script>
+    $(function(){
+        timer = setInterval(function(){
+            var ran = (Math.random()+195.0).toFixed(1);
+            var ran1 = (Math.random()+40.0).toFixed(1);
+            var rel = (Math.random()+225.0).toFixed(1);
+            var rel1 = (Math.random()+43.0).toFixed(1);
+            var geo = document.getElementById("az_el_geo");
+            var rel2 = document.getElementById("az_el_rel");
+            geo.innerHTML = ran+"° "+ran1+"°";
+            rel2.innerHTML = rel+"° "+rel1+"°";
+        },10000)
+    })
+    $(function(){
+        timer = setInterval(function(){
+            var hea = (Math.random()+250).toFixed(1);
+            var head = document.getElementById("heading");
+            head.innerHTML = hea+"° ";
+        },30000)
+    })
+</script>
+
+</head>
+<body>
+<div id="header">
+    <img id="logo_img" alt="COBHAM" src="images/cobham_logo.png" name="logo_img">
+</div>
+<div id="icon-bar">
+    <div>
+        <div class="rx_icontext">RX :</div>
+        <div id="rx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <div id="tx_container">
+        <div class="tx_icontext">TX :</div>
+        <div id="tx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <a href="c5f33.html?pageId=event_list">
+        <img id="alarmicon" alt="ALARM" src="images/event_warning.png">
+    </a>
+
+
+   <div class="topbar_status_container">
+
+
+        <div class="topbar_status_single" id="sys_status"></div>
+
+    </div>
+    <div class="topbar_status_right_container">
+
+        <div class="topbar_status_single" id="dualant_status"></div>
+
+        <div id="status_hostname">ACU-PS - SAILOR 800 VSAT Ku</div>
+    </div>
+
+</div>
+<div id="main">
+<ul id="menu_list">
+<li class="menutext1 first-menu-link"><div class="menu1-space">&nbsp;&nbsp;</div></li>
+
+<li class="menutext1">
+<div class="menu1-space">&#x25cf;</div><div><a href="c5b6d.html?pageId=dashboard">Dashboard</a></div>
+</li>
+
+
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c3861.html?pageId=settings">Settings</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c4660.html?pageId=service">Service</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c0683.html?pageId=administration">Administration</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="ca5c9.html?pageId=helpdesk">Helpdesk</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="cd8f6.html?pageId=site_map">Site map</a></div>
+</li>
+
+
+<li class="menutext1 last-menu-link">
+  <div class="menu1-space">&nbsp;&nbsp;</div>
+</li>
+</ul>
+<div id="content" class="Dashboard"><h1>Dashboard</h1><div class="dash_container">
+
+
+
+<div class="fcol">
+
+
+
+
+    
+    <div class="frow" id="gnss_position_row">
+        <span class="flabel">GNSS position</span><span class="fvalue" id="gnss_position">43.54&deg; N, 7.03&deg; E</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="heading_row">
+        <span class="flabel">Vessel heading</span><span class="fvalue" id="heading">250.0&deg;</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="satellite_profile_row">
+        <span class="flabel">Satellite profile</span><span class="fvalue" id="satellite_profile">Dual Antenna System</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="satellite_position_row">
+        <span class="flabel">Satellite position</span><span class="fvalue" id="satellite_position">1.0&deg; W</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="rx_polarisation_row">
+        <span class="flabel">RX polarisation</span><span class="fvalue" id="rx_polarisation">Vertical</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="tx_polarisation_row">
+        <span class="flabel">TX polarisation</span><span class="fvalue" id="tx_polarisation">X-pol</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="rx_rf_frequency_row">
+        <span class="flabel">RX RF frequency</span><span class="fvalue" id="rx_rf_frequency">11.880920 GHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="lnb_lo_frequency_row">
+        <span class="flabel">LNB LO frequency</span><span class="fvalue" id="lnb_lo_frequency">10.250000 GHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="tx_rf_frequency_row">
+        <span class="flabel">TX RF frequency</span><span class="fvalue" id="tx_rf_frequency">14.200000 GHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="buc_lo_frequency_row">
+        <span class="flabel">BUC LO frequency</span><span class="fvalue" id="buc_lo_frequency">12.800000 GHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="tracking_rf_frequency_row">
+        <span class="flabel">Tracking RF frequency</span><span class="fvalue" id="tracking_rf_frequency">11.880920 GHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    
+        <h1 >Modem</h1>
+    
+
+
+
+
+    
+    <div class="frow" id="modem_model_row">
+        <span class="flabel">Model</span><span class="fvalue" id="modem_model">Dual Antenna Master</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="rx_locked_status_row">
+        <span class="flabel">RX locked status</span><span class="fvalue" id="rx_locked_status">Locked</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="signal_level_row">
+        <span class="flabel">Signal level</span><span class="fvalue" id="signal_level">0 (pwr)</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="refosc_row">
+        <span class="flabel">Reference</span><span class="fvalue" id="refosc">TX 10 MHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="rx_if_frequency_row">
+        <span class="flabel">RX IF frequency</span><span class="fvalue" id="rx_if_frequency">1630.920000 MHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="tx_if_frequency_row">
+        <span class="flabel">TX IF frequency</span><span class="fvalue" id="tx_if_frequency">1400.000000 MHz</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="tx_allowed_row">
+        <span class="flabel">TX allowed</span><span class="fvalue" id="tx_allowed">Yes</span>
+    </div>
+    
+    
+
+
+
+</div>
+
+
+
+<div class="fcol">
+
+
+
+
+    
+    <div class="frow" id="acu_part_name_row">
+        <span class="flabel">ACU part name</span><span class="fvalue" id="acu_part_name">TT-7016A</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="antenna_part_name_row">
+        <span class="flabel">Antenna part name</span><span class="fvalue" id="antenna_part_name">TT-7008A</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="acu_serial_number_row">
+        <span class="flabel">ACU serial number</span><span class="fvalue" id="acu_serial_number">81141110</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="antenna_serial_number_row">
+        <span class="flabel">Antenna serial number</span><span class="fvalue" id="antenna_serial_number">81144014</span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="engineering_version_row">
+        <span class="flabel">Software version</span><span class="fvalue" id="engineering_version">1.62 build 31</span>
+    </div>
+    
+    
+
+
+
+
+    
+    
+        <h1 >Pointing</h1>
+    
+
+
+
+    
+    <div class="frow" id="az_el_geo_row">
+        <span class="flabel">Azimuth, elevation geo</span><span class="fvalue" id="az_el_geo">191.6&deg;  38.9&deg; </span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="az_el_rel_row">
+        <span class="flabel">Azimuth, elevation rel</span><span class="fvalue" id="az_el_rel">255.3&deg;  41.4&deg; </span>
+    </div>
+    
+    
+
+
+
+
+    
+    <div class="frow" id="polarisation_skew_row">
+        <span class="flabel">Polarisation skew</span><span class="fvalue" id="polarisation_skew">8.4&deg; </span>
+    </div>
+    
+    
+
+
+
+
+    
+    
+        <h1 >TX</h1>
+    
+
+
+
+
+    
+    <div class="frow" id="buc_tx_row">
+        <span class="flabel">BUC TX</span><span class="fvalue" id="buc_tx">On</span>
+    </div>
+    
+    
+
+
+
+
+    
+    
+        <h1 id="dm_role"></h1>
+    
+
+
+
+
+    
+    <div class="frow" id="dm_status_row" hidden>
+        <span class="flabel">Status</span><span class="fvalue" id="dm_status">Active</span>
+    </div>
+    
+    
+
+
+
+    <div class="frow">
+        <span class="flabel" id="dm_link"></span>
+    </div>
+
+
+
+
+</div>
+
+
+
+</div>
+
+<script type="text/javascript">
+blocking_zones = {"zones":[{"enabled":1,"notx":1,"azimuth":{"start":{"val":45},"stop":{"val":135}},"elevation":{"start":{"val":0},"stop":{"val":80}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}},{"enabled":0,"notx":0,"azimuth":{"start":{"val":0},"stop":{"val":0}},"elevation":{"start":{"val":0},"stop":{"val":0}}}],"min_ele":-90,"max_ele":90,"img":"/images/zones.png","notx":1,"ship_azi":255290,"ship_ele":41380};
+
+function dashboard_cb(data)
+{
+    if (!("dashboard" in data))
+        return;
+
+    var db_data = data.dashboard;
+
+    for (it in db_data)
+        $("#" + it).html(db_data[it]);
+
+    if ("dm_role" in db_data)
+    {
+        $("#dm_role_row").show();
+        $("#dm_status_row").show();
+    }
+    else
+    {
+        $("#dm_role_row").hide();
+        $("#dm_status_row").hide();
+    }
+
+    if ("dm_peer_ip" in db_data)
+    {
+        var url = db_data["dm_peer_ip"];
+        var text = db_data["dm_link_text"];
+        //$("#dm_link").html("<a href="http://" + window.location.hostname + url + "">" + text + "</a>");
+    }
+}
+
+register_status_cb({"fun": dashboard_cb, "name": "dashboard"});
+</script>
+</div></div>
+</body>
+
+<!-- Mirrored from 213.234.126.193:8083/ by HTTrack Website Copier/3.x [XR&CO"2014], Wed, 05 Aug 2020 07:15:21 GMT -->
+</html>

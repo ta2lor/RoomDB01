@@ -1,0 +1,53 @@
+function Diag(ns, val, data_req) {
+    var _this = this;
+    this.data = val;
+    this.ns = ns;
+    this.data_req = data_req;
+    this.input_vmu = $("#enable_" + ns + "_vmu");
+    this.input_buc = $("#enable_" + ns + "_buc");
+    this.status = $("#status_" + ns);
+    this.form = $("#" + this.ns);
+
+    this.init_input = function() {
+        this.input_vmu.prop('checked', _this.data.vmu == 1 ? true : false);
+        this.input_buc.prop('checked', _this.data.buc == 1 ? true : false);
+    }
+
+    this.form.bind('submit', function() {
+        var data = {};
+
+        data.vmu = _this.input_vmu.prop('checked') ? 1 : 0;
+        data.buc = _this.input_buc.prop('checked') ? 1 : 0;
+
+        _this.status.text("Applying settings ...");
+
+        LibAcu.getJSON("ajax_misc", _this.data_req, {
+                json: JSON.stringify(data)
+            },
+            function(rsp) {
+                try {
+                    _this.data = rsp;
+                    _this.init_input();
+                    _this.status.text("Settings applied.");
+                    setTimeout(function() {
+                        _this.status.text("");
+                    }, 2000);
+                } catch (err) {
+                    _this.status.text("Error applying settings");
+                }
+            });
+        return false;
+    });
+}
+
+$(window).load(function() {
+    setTimeout(function() {
+        $("#diag_status").hide()
+    }, 1000);
+    setTimeout(function() {
+        $("#stat_status").hide()
+    }, 1000);
+
+    var diag = new Diag("diag", diag_json, "set_diag");
+    diag.init_input();
+});

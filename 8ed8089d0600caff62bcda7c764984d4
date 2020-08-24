@@ -1,0 +1,390 @@
+/* whether the user has typed in the modem name field or not */
+var auto_modem_name = false;
+
+function check_pw(modem) {
+    if (typeof(modem.password) == 'undefined') {
+        $("[id^=pass]").closest('tr').hide();
+        return;
+    }
+
+    $("[id^=pass]").closest('tr').show();
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.root_password) != 'undefined') {
+        $("#passwd_1").val(modem_profile.root_password);
+        $("#passwd_2").val(modem_profile.user_password);
+    }
+}
+
+function check_baud(modem) {
+    var options = modem.baud_rate;
+
+    if (typeof(options) == 'undefined' &&
+        typeof(modem.gps_output) == 'undefined') {
+        $("#baud_rate").closest('tr').hide();
+        return;
+    }
+
+    $("#baud_rate").closest('tr').show();
+    $("#baud_label").text(LibAcu.dict("Baud rate"));
+    if (typeof(modem.gps_output) != 'undefined') {
+        $("#baud_label").text(LibAcu.dict("GNSS output"));
+        options = modem.gps_output;
+    }
+
+    $("#baud_rate").empty();
+    $.each(options, function(idx, val) {
+        if (val == 0) {
+            $("#baud_rate").append('<option value="0">' + LibAcu.dict('Disabled') + '</option');
+        } else {
+            $("#baud_rate").append('<option value="' + val + '">' + val + ' Baud</option');
+        }
+    });
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.baud) != 'undefined') {
+        $("#baud_rate").val(($.inArray(modem_profile.baud, options) != -1 ? modem_profile.baud : options[0]));
+    } else
+        $("#baud_rate option:first-child").attr("selected", "selected");
+}
+
+function check_ip(modem) {
+    if (typeof(modem.ip) == 'undefined') {
+        $("[id^=ip_addr]").closest('tr').hide();
+        return;
+    }
+
+    $("[id^=ip_addr]").closest('tr').show();
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.ip) != 'undefined') {
+        var ip = $.map(modem_profile.ip.split('.'), Number);
+
+        $.each(ip, function(idx, val) {
+            $("#ip_addr" + (idx + 1)).val(val);
+        });
+    }
+}
+
+function check_port(modem) {
+    if (typeof(modem.port) == 'undefined') {
+        $("#port").closest('tr').hide();
+        return;
+    }
+
+    $("#port").closest('tr').show();
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.port) != 'undefined') {
+        $("#port").val(modem_profile.port == -1 ? "" : modem_profile.port);
+    }
+}
+
+function check_refosc(modem) {
+    if (typeof(modem.ref_osc) == 'undefined') {
+        $("#refosc").closest('tr').hide();
+        return;
+    }
+
+    $("#refosc").closest('tr').show();
+
+    $("#refosc").empty();
+    $.each(modem.ref_osc, function(idx, val) {
+        /* Modems supported on some systems have options that are enabled/disabled.
+        In other words, the option the val is referring to may or may not be present. */
+        $.each(modem_opts.ref_osc, function(idx2, itm) {
+            // Check if the refosc option is unsupported. If so, don't add it
+            if (typeof(itm.supported) != 'undefined' && itm.supported == 0) {
+                // Continue
+                return true;
+            }
+
+            if (val == itm.val) {
+                $("#refosc").append('<option value=' + itm.val + '>' + itm.str + '</option');
+                return false;
+            }
+        });
+    });
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.refosc) != 'undefined') {
+        $("#refosc").val(modem_profile.refosc);
+    } else
+        $("#refosc option:first-child").attr("selected", "selected");
+}
+
+function check_rssi_lock(modem) {
+    if (typeof(modem.rssi_lock) == 'undefined') {
+        $("[id^=rssi_lock]").closest('tr').hide();
+        return;
+    }
+
+    $("[id^=rssi_lock]").closest('tr').show();
+    $("#rssi_lock_type_label").text(LibAcu.dict("RSSI Lock Type"));
+
+    $("#rssi_lock_type").empty();
+    $.each(modem.rssi_lock, function(idx, val) {
+        /* Modems supported on some systems have options that are enabled/disabled.
+        In other words, the option the val is referring to may or may not be present. */
+        if (val < modem_opts.rssi_lock.length) {
+            $("#rssi_lock_type").append('<option value=' + val + '>' + modem_opts.rssi_lock[val] + '</option');
+        }
+    });
+
+    if (typeof(modem_profile) != 'undefined' &&
+        typeof(modem_profile.rssi_lock_type) != 'undefined') {
+        $("#rssi_lock_type").val(modem_profile.rssi_lock_type);
+        $("#rssi_lock_level").val(modem_profile.rssi_lock_level);
+    } else
+        $("#rssi_lock_type option:first-child").attr("selected", "selected");
+
+    $("#rssi_lock_type").trigger('rssi_change');
+}
+
+function hide_all() {
+    $("#port").closest('tr').hide();
+    $("[id^=rssi_lock]").closest('tr').hide();
+    $("[id^=ip_addr]").closest('tr').hide();
+    $("#baud_rate").closest('tr').hide();
+    $("[id^=pass]").closest('tr').hide();
+    $("#refosc").closest('tr').hide();
+    $("#used_on").closest('tr').hide();
+}
+
+function upd(modem) {
+    if (typeof(modem) == 'undefined')
+        return;
+
+    var n = $("#prof_name");
+    if (n.val() == "" || auto_modem_name) {
+        n.val(modem.name);
+        auto_modem_name = true;
+    }
+
+    check_pw(modem);
+    check_port(modem);
+    check_ip(modem);
+    check_baud(modem);
+    check_rssi_lock(modem);
+    check_refosc(modem);
+}
+
+function validateIpAddress(ip1, ip2, ip3, ip4) {
+    if (isNaN(ip1) || isNaN(ip2) || isNaN(ip3) || isNaN(ip4))
+        return false;
+    if (ip1 == 0 && ip2 == 0 && ip3 == 0 && ip4 == 0)
+        return false;
+    else if (ip1 == 255 && ip2 == 255 && ip3 == 255 && ip4 == 255)
+        return false;
+    else if (ip1 < 0 || ip2 < 0 || ip3 < 0 || ip4 < 0)
+        return false;
+    else if (ip1 > 255 || ip2 > 255 || ip3 > 255 || ip4 > 255)
+        return false;
+    else
+        return true;
+}
+
+function cancelModemForm() {
+    window.location = window.location.pathname + "?pageID=modem_profiles";
+}
+
+function submitModemForm(form) {
+    if (!submitCheck(form))
+        return;
+
+    var json = JSON.stringify(LibAcu.genFormDataArray(form));
+    if (!json) return false;
+
+    var req = {
+        json: json
+    };
+
+    LibAcu.getJSON("ajax_modem_profile", "create_profile", req, function(rsp) {
+        if (rsp.err == 0)
+            window.location = window.location.pathname + "?pageID=modem_profiles";
+        else if (rsp.idx < 0)
+            alert(LibAcu.dict("Unable to add new modem profile. List is full."));
+    });
+    return false;
+}
+
+function deleteModem(idx) {
+    if (!confirm(LibAcu.dict("Please confirm deletion of selected profile")))
+        return;
+
+    var json = JSON.stringify({
+        idx: idx
+    });
+    if (!json) return false;
+
+    var req = {
+        json: json
+    };
+
+    LibAcu.getJSON("ajax_modem_profile", "delete_profile", req, function(rsp) {
+        if (rsp.err != 0)
+            alert(LibAcu.dict("Modem profile can not be deleted. It is used in a satellite profile."));
+        else
+            location.reload();
+    });
+}
+
+function submitCheck(form) {
+    var err_name = LibAcu.dict("Enter valid modem profile name");
+    var err_modem = LibAcu.dict("Select modem");
+    var err_ip = LibAcu.dict("Enter valid IP address.");
+    var err_port = LibAcu.dict("Enter valid port number.");
+    var err_baud = LibAcu.dict("Select valid baud rate.");
+    var err_rssi_lock = LibAcu.dict("Select valid lock level (0 - 15000 mV)");
+
+    if (!validateStr($("#prof_name").get(0), err_name)) {
+        $("#prof_name").focus();
+        return false;
+    }
+
+    if (parseInt($("#modem").val()) == 0) {
+        alert(err_modem);
+        $("#modem").focus();
+        return false;
+    }
+    if (!$("[id^=ip_addr]").is(":hidden") &&
+        !validateIpAddress(parseInt($("#ip_addr1").val()),
+            parseInt($("#ip_addr2").val()),
+            parseInt($("#ip_addr3").val()),
+            parseInt($("#ip_addr4").val()))) {
+        alert(err_ip);
+        $("#ip_addr1").focus();
+        return false;
+    }
+
+    if (!$("#port").is(":hidden")) {
+        var val = parseInt($("#port").val());
+        if (isNaN(val) || val < 1 || val > 65535) {
+            alert(err_port);
+            $("#port").focus();
+            return false;
+        }
+    }
+
+    if (!$("#rssi_lock_type").is(":hidden")) {
+        if ($("#rssi_lock_level").is(':disabled')) {
+            $("#rssi_lock_level").val(0);
+        } else {
+            var val = $("#rssi_lock_level").val();
+            if (isNaN(val) || val < 0 || val > 15000) {
+                alert(err_rssi_lock);
+                $("#rssi_lock_level").focus();
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+$(window).load(function() {
+
+    $("#modem").on('modem_change', function() {
+
+        var modem_type = this.value;
+        var modem = null;
+
+        if (modem_type > 0) {
+            $.each(modem_types, function(idx, obj) {
+                if (modem_type == obj.type) {
+                    modem = modem_types[idx];
+                }
+            });
+        }
+
+        hide_all();
+
+        if (modem)
+            upd(modem);
+    });
+
+    $("#modem").on('modem_start', function() {
+        if (typeof(modem_types) == 'undefined')
+            return;
+
+        modem_opts = modem_types.modems.modem_opts;
+        modem_types = modem_types.modems.modem_types;
+
+        $.each(modem_profiles.modem_profiles, function(idx, val) {
+            if (val.idx == edit_idx) {
+                modem_profile = val;
+                return false;
+            }
+        });
+
+        var modem;
+        hide_all();
+
+        if (typeof(modem_profile) != 'undefined') {
+            $.each(modem_types, function(idx, val) {
+                if (val.type == modem_profile.modem_type) {
+                    modem = val;
+                    return false;
+                }
+            });
+
+            $("#used_on").closest('tr').show();
+            if (modem_profile.satellites_used_on == 1) {
+                $("#used_on").text(modem_profile.satellites_used_on + LibAcu.dict(" Satellite profile"));
+            } else {
+                $("#used_on").text(modem_profile.satellites_used_on + LibAcu.dict(" Satellite profiles"));
+            }
+
+            $("#prof_name").val(modem_profile.name);
+        }
+
+        $("#modem").empty();
+        $("#modem").append('<option value="0">&lt;' + LibAcu.dict("select modem") + '&gt;</option');
+        $.each(modem_types, function(idx, obj) {
+            if (obj.supported) {
+                $("#modem").append('<option value=' + obj.type + '>' + obj.name + '</option');
+            }
+        });
+
+        if (typeof(modem_profile) != 'undefined') {
+            $("#modem").val(modem_profile.modem_type);
+        }
+
+        upd(modem);
+    });
+
+    $("#modem_form").submit(function() {
+        submitModemForm(this);
+        return false;
+    });
+
+    $("#rssi_lock_type").on('rssi_change', function() {
+        if (parseInt($("#rssi_lock_type").val()) == 0) {
+            $("#rssi_lock_level").prop('disabled', 'disabled');
+        } else {
+            $("#rssi_lock_level").removeProp("disabled");
+        }
+    });
+
+    $("#modem_form").bind('reset', function() {
+        return cancelModemForm(this);
+    });
+
+    $("#modem").change(function() {
+        $("#modem").trigger('modem_change');
+    });
+
+    $("#modem").keyup(function() {
+        $("#modem").trigger('modem_change');
+    });
+
+    $("#rssi_lock_type").change(function() {
+        $("#rssi_lock_type").trigger('rssi_change');
+    });
+
+    $("#prof_name").keypress(function() {
+        auto_modem_name = false;
+    });
+
+    $("#modem").trigger('modem_start');
+});

@@ -1,0 +1,238 @@
+/** General and commonly used form validation functions **/
+
+// Reject strings beginning with space or containing ",',< or >
+var isValidStr = new RegExp("^[^\"^'^<^>^ ]{1}[^\"^'^<^>]*$");
+var isValidAscii = new RegExp(/^[\040-\177]*$/);
+
+/**
+ * Show error message and set focus on the input element
+ * that contains the error.
+ */
+function showErr(ele, err_msg, enable_all) {
+    alert(err_msg)
+    ele.focus();
+    if (enable_all)
+        enableAll(ele.form);
+    return false;
+}
+
+/**
+ * Remove leading/trailing whitespace
+ */
+function validateTrim(x) {
+    return x.replace(/^\s+|\s+$/gm, '');
+}
+
+/**
+ * Validate input element float value.
+ */
+function validateInput(ele, min, max, err_msg) {
+    var value = parseFloat(ele.value);
+
+    if (isShown(ele) && (isNaN(value) || value < min || value > max))
+        return showErr(ele, err_msg);
+    else
+    {
+        ele.value = value;
+        return true;
+    }
+}
+
+/**
+ * Validate input element integer value.
+ */
+function validateInputInt(ele, min, max, err_msg) {
+    var value = parseInt(ele.value);
+
+    if (isShown(ele) && (isNaN(value) || value < min || value > max))
+        return showErr(ele, err_msg);
+    else
+    {
+        ele.value = value;
+        return true;
+    }
+}
+
+/**
+ *  Validate string (check if it is empty).
+ */
+function validateStr(ele, err_msg) {
+    if (!isValidStr.test(ele.value) ||
+        !isValidAscii.test(ele.value))
+        return showErr(ele, err_msg);
+    else
+        return true;
+}
+
+/**
+ *  Validate string length.
+ */
+function validateStrLength(str, min, max, err_msg) {
+    if (str.value.length < min || str.value.length > max)
+        return showErr(str, err_msg);
+    else
+        return true;
+}
+
+/**
+ *  Validate illegal substring.
+ */
+function validateStrIllegalSubstr(str, substr, err_msg) {
+    if (str.value.indexOf(substr) > -1)
+        return showErr(str, err_msg);
+    else
+        return true;
+}
+
+/**
+ *  Return true if the given element is shown and should be validate.
+ */
+function isShown(element) {
+    if (element == null)
+        return false;
+
+    if (element.parentNode == null)
+        return true;
+    return (element.parentNode.parentNode.style["display"] != "none");
+}
+
+function show(elementId) {
+    document.getElementById(elementId).style.display = "";
+    document.getElementById(elementId).disabled = false;
+}
+
+function hide(elementId) {
+    document.getElementById(elementId).style.display = "none";
+    document.getElementById(elementId).disabled = true;
+}
+
+/**
+ * Validate position string.
+ */
+function validatePositionStr(ele, min, max, valid_chars, err) {
+    if (!isShown(ele))
+        return true;
+    var res = true;
+
+    var str = ele.value;
+    var gps = str.replace(/\s/g, "");
+    var gpsPat1 = new RegExp("^[-]?[0-9]{1,3}(\\.[0-9]*)?$");
+    var gpsPat2 = new RegExp("^[0-9]{1,3}(\\.[0-9]*)?(" + valid_chars + ")$");
+    if (gps.match(gpsPat1)) {
+        if (gps < min || gps > max)
+            res = false;
+    } else if (gps.match(gpsPat2)) {
+        var val = gps.substr(0, gps.length - 1);
+        if (val < 0 || val > max)
+            res = false;
+    } else {
+        res = false;
+    }
+    if (!res)
+        return showErr(ele, err)
+
+    return true;
+}
+
+/**
+ * Validate latitude string.
+ */
+function validateLatitude(ele, err) {
+    return validatePositionStr(ele, -90, 90, "S|N|s|n", err);
+}
+
+/**
+ * Validate longitude string.
+ */
+function validateLongitude(ele, err) {
+    return validatePositionStr(ele, -180, 180, "E|W|e|w", err);
+}
+
+/**
+ * Validate heading value.
+ */
+function validateHeading(ele, value) {
+    if (isNaN(value) || value == "" || value < -360 || value > 360) {
+        return showErr(ele, LibAcu.dict("Enter heading in range -360.0° to 360.0°"));
+    }
+
+    return true;
+}
+
+/* Functions to validate IP addreses */
+
+/* Validate and convert array of four octets representing an IPv4 address.
+ * Converted to string (str, dot decimal), 32-bit number (num) and an array
+ * (octets) of four parsed octets.
+ */
+function ip_addr_from_arr(ip_arr) {
+    var i;
+    var ip_addr = {
+        valid: true,
+        str: "",
+        num: 0,
+        octets: [0, 0, 0, 0],
+        edit_idx: 0
+    };
+
+    if (ip_arr.length != 4) {
+        ip_addr.valid = false;
+        return ip_addr;
+    }
+
+    for (i = 0; i < 4; i++) {
+        var v = parseInt(ip_arr[i], 10);
+
+        if (isNaN(v) || v < 0 || v > 255) {
+            v = 0;
+            ip_addr.octets[i] = ip_arr[i];
+            if (ip_addr.valid)
+                ip_addr.edit_idx = i;
+            ip_addr.valid = false;
+        } else {
+            ip_addr.octets[i] = v;
+        }
+        ip_addr.num = (256 * ip_addr.num) + v;
+
+        if (i > 0)
+            ip_addr.str += ".";
+        ip_addr.str += v;
+    }
+
+    return ip_addr;
+};
+
+function ip_addr_from_str(ip_str) {
+    return ip_addr_from_arr(ip_str.split('.'));
+}
+
+function ip_addr_from_selector(selector) {
+    var arr = [];
+    $(selector).map(function() {
+        arr.push($(this).val());
+    });
+    return ip_addr_from_arr(arr);
+}
+
+// file_input: The jquery object representing the input field of type "file"
+function validate_upload_file_size(file_input, size_limit) {
+    if (file_input.length && file_input.val())
+    {
+        // Get the DOM element
+        file_input = file_input[0];
+
+        if (!file_input)
+            return false;
+
+        if (file_input.files) {
+            // The browser supports the `files` property of file inputs
+
+            var file = file_input.files[0];
+
+            if (file.size >= size_limit) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

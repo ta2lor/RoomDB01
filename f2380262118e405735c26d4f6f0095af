@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+
+<!-- Mirrored from 213.234.126.193:8083/c?pageId=network by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Aug 2020 07:16:18 GMT -->
+<head profile="http://www.w3.org/2005/10/profile">
+<title>SAILOR 800 VSAT Ku</title>
+
+<link type='text/css' rel='stylesheet' href='css/style.css'/>
+
+<link rel="shortcut icon" href="images/favicon.ico"/>
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+<meta http-equiv="PRAGMA" content="NO-CACHE"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="Author" content="Thrane &amp; Thrane"/>
+<meta name="copyright" content="Thrane &amp; Thrane 2010"/>
+<!--[if IE 7]>
+<link type='text/css' rel='stylesheet' href='/css/ie7.css?1524407287'/>
+<script type='text/javascript' src='/js/lib/json2_lib.js?1524407287'></script>
+<![endif]-->
+<script type="text/javascript" src="js/lib/jquery-1.11.1ec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/libacuec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/reboot_handlerec9a.js?1524407287"></script>
+
+<script type="text/javascript" src="js/ajax_requestsec9a.js?1524407287"></script>
+<script type="text/javascript">
+json_status = {"adu":{"rssi_blocks":7,"tx_blocks":4},"status":"Tracking","dual":{"enabled":1,"status":"Slave: Active"},"dep_status":"Deployed","events":0};
+syscfg = {"sys_type":{"mvsat":{}},"rf":{"ku":{}},"dual":{},"motors":{"azi":{},"ele":{},"xele":{},"pol":{}},"xim":{},"heading":{},"modem":{},"statistics":{}};
+</script>
+
+</head>
+<body>
+<div id="header">
+    <img id="logo_img" alt="COBHAM" src="images/cobham_logo.png" name="logo_img">
+</div>
+<div id="icon-bar">
+    <div>
+        <div class="rx_icontext">RX :</div>
+        <div id="rx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <div id="tx_container">
+        <div class="tx_icontext">TX :</div>
+        <div id="tx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <a href="c5f33.html?pageId=event_list">
+        <img id="alarmicon" alt="ALARM" src="images/event_warning.png">
+    </a>
+
+
+   <div class="topbar_status_container">
+
+
+        <div class="topbar_status_single" id="sys_status"></div>
+
+    </div>
+    <div class="topbar_status_right_container">
+
+        <div class="topbar_status_single" id="dualant_status"></div>
+
+        <div id="status_hostname">ACU-PS - SAILOR 800 VSAT Ku</div>
+    </div>
+
+</div>
+<div id="main">
+<ul id="menu_list">
+<li class="menutext1 first-menu-link"><div class="menu1-space">&nbsp;&nbsp;</div></li>
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c5b6d.html?pageId=dashboard">Dashboard</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c3861.html?pageId=settings">Settings</a></div>
+</li>
+
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c39a8.html?pageId=satellite_profiles">Satellite profiles</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c0185.html?pageId=modem_profiles">Modem profiles</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c3936.html?pageId=blocking_zones">Blocking zones</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&#x25cf;</div><div><a href= "c5ee9.html?pageId=network">Network</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c7b38.html?pageId=navigation">Navigation</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "ceb89.html?pageId=e-mail_setup">E-mail setup</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c4053.html?pageId=reporting">Reporting</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c4f5f.html?pageId=dual_antenna">Dual antenna</a></div>
+</li>
+
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c4660.html?pageId=service">Service</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c0683.html?pageId=administration">Administration</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="ca5c9.html?pageId=helpdesk">Helpdesk</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="cd8f6.html?pageId=site_map">Site map</a></div>
+</li>
+
+
+<li class="menutext1 last-menu-link">
+  <div class="menu1-space">&nbsp;&nbsp;</div>
+</li>
+</ul>
+<div id="content" class="Network"><h1>Network</h1><p id='errortext'>Access to this page requires administrator rights</p></div></div>
+</body>
+
+<!-- Mirrored from 213.234.126.193:8083/c?pageId=network by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Aug 2020 07:16:18 GMT -->
+</html>

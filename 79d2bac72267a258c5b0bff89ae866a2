@@ -1,0 +1,172 @@
+function Eventlist() {};
+
+Eventlist.add_table_cell = function(str) {
+    return "<td>" + str + "</td>";
+};
+
+Eventlist.add_info_table_cell = function(info_img, ev_descr) {
+    return "<td><div class='event_info'><img id='ev_desc_icon' alt='Event info' src='" + info_img +
+        "' title=''><span class='event_info_text'>" + ev_descr + "</span></img></div></td>";
+};
+
+
+Eventlist.add_severity = function(ev) {
+    var str = "<td ";
+    if (ev.severity == "ERROR")
+        str += 'class="error_icon"';
+    else if (ev.severity == "WARNING")
+        str += 'class="warning_icon"';
+    else if (ev.severity == "INFO")
+        str += 'class="info_icon"';
+    str += " >";
+
+    return str + "</td>";
+}
+
+Eventlist.sort_by_ticks = function(events) {
+    /* Sort order : Most recent on top */
+    events.sort(function(a, b) {
+        if (a.ticks < b.ticks) {
+            return 1;
+        }
+        if (a.ticks > b.ticks) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+}
+
+Eventlist.format_date = function(ticks) {
+    var date = new Date(ticks * 1000);
+    var date_str = " " + ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' +
+        date.getUTCSeconds()).slice(-2);
+    return date.getUTCFullYear() + "-" + ('0' + (date.getUTCMonth() + 1)).slice(-2) + "-" + ('0' + date.getUTCDate()).slice(-2) +
+        date_str;
+}
+
+Eventlist.init_event_table = function(table_id, events) {
+    var events_str;
+
+    if (events.length < 1)
+        return;
+
+    events_str = "<thead><tr>";
+
+    /* Create the table headers */
+    $.each(Eventlist.headers, function(idx, header) {
+        events_str += "<th>" + header + "</th>";
+    });
+
+    events_str += "</thead></tr><tbody>";
+
+    /* Create a row for each Event entry */
+    $.each(events, function(idx, ev) {
+        var date_str = Eventlist.format_date(ev.ticks);
+
+        events_str += "<tr ";
+        if (ev.severity == "ERROR")
+            events_str += 'class="ev_error"';
+        else if (ev.severity == "WARNING")
+            events_str += 'class="ev_warning"';
+        else if (ev.severity == "INFO")
+            events_str += 'class="ev_info"';
+        events_str += " >";
+        events_str += Eventlist.add_table_cell(date_str);
+        events_str += Eventlist.add_table_cell(ev.identifier.toString(16).toUpperCase() + "-" + ev.subid.toString(16).toUpperCase());
+        if (typeof(SingleApp) == 'undefined') {
+            events_str += Eventlist.add_table_cell(ev.unit);
+            events_str += Eventlist.add_table_cell(ev.severity);
+        } else {
+            events_str += Eventlist.add_severity(ev);
+        }
+
+        events_str += Eventlist.add_table_cell(ev.text + ' (' + ('00000000' + ev.info.toString(16)).slice(-8).toUpperCase() +
+            ')');
+        events_str += Eventlist.add_info_table_cell(ev.info_img, ev.descr);
+
+        events_str += "</tr>";
+    });
+
+    events_str += "</tbody>";
+
+    $(table_id).append(events_str);
+    $(table_id).addClass("eventlist");
+
+    /* Set first header to left aligned */
+    $(table_id + " th:first-child, " + table_id + " td:first-child").addClass("firstCol");
+    $(table_id + " th:nth-last-child(2), " + table_id + " td:nth-last-child(2)").addClass("secLastCol");
+    $(table_id + " th:last-child, " + table_id + " td:last-child").addClass("lastCol");
+};
+
+Eventlist.init_event_list = function(table_id, events) {
+
+    var list = '<div class="list-group">';
+
+    $.each(events, function(idx, ev) {
+        var date_str = Eventlist.format_date(ev.ticks);
+
+        /* Start entry */
+        list += '<div class="list-group">';
+        list += '<div class="list-group-item">';
+        list += '<h4 class="list-group-item-heading">' + ev.text + '</h4>';
+        list += '<p class="list-group-item-text">' + (ev.identifier.toString(16).toUpperCase() + "-" + ev.subid.toString(
+            16).toUpperCase()) + ' : ' + ev.text + ' </p>';
+        list += '</div>';
+        list += '</div>';
+    });
+
+    $("#content").empty();
+    $("#content").append(list + '</div>');
+};
+
+Eventlist.init = function(singleapp, eventlist) {
+    if (singleapp) {
+
+        /* This page may be navigated to before the data is ready.
+        So check for eventlist data struct. */
+        if (location.hash.match(/Event/) == null ||
+            typeof(eventlist) == 'undefined') return;
+
+        Eventlist.init_event_list("#eventlist", eventlist.events);
+    } else {
+        Eventlist.init_event_table("#eventlist", eventlist.events);
+        Eventlist.init_event_table("#notifylist", eventlist.notifications);
+    }
+}
+
+Eventlist.get_data = function() {
+    setInterval(function() {
+        LibAcu.getJSON("ajax_status", "get_eventlist", "", function(rsp) {
+            /* Sort events BEFORE compare. */
+            Eventlist.sort_by_ticks(rsp.events);
+
+            if (JSON.stringify(Eventlist.eventlist) != JSON.stringify(rsp)) {
+                $(window).trigger('eventchange', rsp);
+            }
+        })
+    }, 5000);
+}
+
+$(window).load(function() {
+
+    if (typeof(eventlist) != 'undefined') {
+        Eventlist.headers = ["Time UTC", "ID", "Unit", "Severity", "Text", "Info"];
+        Eventlist.sort_by_ticks(eventlist.events);
+        Eventlist.sort_by_ticks(eventlist.notifications);
+        Eventlist.init(false, eventlist);
+        return;
+    }
+});
+
+$(window).on('apprun', function() {
+    Eventlist.get_data();
+    Eventlist.headers = ["Time UTC", "ID", "Severity", "Text"];
+
+    $(window).on('navigate', function(e, eventlist) {
+        Eventlist.init(true, Eventlist.eventlist);
+    });
+    $(window).on('eventchange', function(e, evlist) {
+        Eventlist.init(true, evlist);
+    });
+});

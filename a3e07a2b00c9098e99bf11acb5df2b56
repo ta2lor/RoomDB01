@@ -1,0 +1,112 @@
+function LibAcu() {};
+
+/**
+ * Create simple confirm dialog
+ * @text Text to be shown in dialog
+ */
+LibAcu.submitConfirm = function(text) {
+    return confirm(text);
+}
+
+/**
+ * Create ACU AJAX request (simple $.getJSON wrapper)
+ * @module: Module that request should be send to
+ * @req: Request function string
+ * @data: Optional data object to be send with the request
+ * @cb: Function to be called on response
+ */
+LibAcu.getJSON = function(module, req, data, cb) {
+    var req_data = {
+        "ajaxMod": module,
+        "ajaxReq": req
+    };
+    if (data) {
+        $.extend(req_data, data);
+    }
+    return $.getJSON(window.location.pathname, req_data, cb);
+}
+
+/**
+ * This is the client side dictionary implementation.
+ * Currently the dict function just returns the exact string
+ * it receives, but it is important to call it for future l10n support.
+ * @param str String to be translated to users preferred language
+ * @return Translated string
+ */
+LibAcu.dict = function(text) {
+    return text;
+}
+
+/**
+ * Generate an array containing data from visible input fields in the given form.
+ * @param form HTML form element to be serialized
+ * @return An array of keys and values
+ */
+LibAcu.genFormDataArray = function(form) {
+    // Generate object containing visible form data
+    var data = {};
+
+    // Visible input
+    var arr1 = $(form).find(":input:not(:hidden)").serializeArray();
+
+    // Hidden input
+    var arr2 = $(form).find("input[type='hidden']").serializeArray();
+
+    $.each(arr1.concat(arr2), function(i, n) {
+        data[n.name] = n.value;
+    });
+    return data;
+}
+
+/**
+ * Generate an HTML option element string. Use this function instead of the
+ * new Option() constructor, which dosen't work in old browsers (IE ver < =6).
+ * @return A string containing an HTML option element.
+ */
+LibAcu.genOption = function(label, value) {
+    return "<option value=" + value + ">" + label + "</option>";
+}
+
+LibAcu.genSelectOptions = function(selector, array) {
+
+    $(selector).empty();
+    $.each(array, function(key, value) {
+        $(selector).append(LibAcu.genOption(value, key));
+    });
+}
+
+LibAcu.heading = function(hdg) {
+    return LibAcu.degree(hdg);
+}
+
+LibAcu.degree = function(deg) {
+    return (deg / 1000).toFixed(1) + '&deg;';
+}
+
+LibAcu.gpsLatitude = function(latitude) {
+    return Math.abs(1e-6 * latitude).toFixed(2) + '&deg;' + (latitude < 0 ? 'S' : 'N');
+}
+
+LibAcu.longitude_deg = function(longitude) {
+    return LibAcu.degree(Math.abs(longitude)) + (longitude < 0 ? 'W' : 'E');
+}
+
+LibAcu.gpsLongitude = function(longitude) {
+    return Math.abs(1e-6 * longitude).toFixed(2) + '&deg;' + (longitude < 0 ? 'W' : 'E');
+}
+
+/* Common function to set status message on GUI with a timeout */
+LibAcu.msg_with_timeout = function(selector, msg) {
+    /* Default to the standard message. */
+    if (typeof(msg) == 'undefined')
+        msg = "Settings applied.";
+
+    /* Default to default status id */
+    if (!selector || typeof(selector) == 'undefined')
+        selector = "#submit_status";
+
+    $(selector).text(msg);
+    setTimeout(function() {
+        $(selector).text("")
+    }, 2000);
+}

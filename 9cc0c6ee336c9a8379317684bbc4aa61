@@ -1,0 +1,15 @@
+$(window).load(function() {
+    $("#upload").click(function(event) {
+        if (!$('#upload_file').val()) {
+            alert(LibAcu.dict(UPLOAD_NO_FILE_SELECTED));
+            event.preventDefault();
+        }
+        else {
+            if (!validate_upload_file_size($('#upload_file'), JS_MAN_UPLOAD_LIMIT)) {
+                alert(LibAcu.dict("Invalid file"));
+                event.preventDefault();
+                return;
+            }
+        }
+    });
+});

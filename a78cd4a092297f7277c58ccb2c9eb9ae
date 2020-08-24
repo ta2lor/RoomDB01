@@ -1,0 +1,102 @@
+var timer_ref = null;
+var xmlhttp;
+
+function start_reboot_handler(sw_upload, msg) {
+    var timer = true;
+
+    if (window.XMLHttpRequest) { // IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp = new XMLHttpRequest();
+    } else { // IE6, IE5
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    // Stop all ongoing status timers if any
+    if (typeof poll_acu_status_stop == "function") poll_acu_status_stop();
+    if (typeof poll_report_status_stop == "function") poll_report_status_stop();
+    if (typeof stop_polling_lineup_status == "function") stop_polling_lineup_status();
+
+    var custom_text = "";
+    var clear = false;
+
+    if (sw_upload) {
+        clear = true;
+
+        if (typeof(upload_res.error) == 'undefined' || upload_res.error == 0) {
+            custom_text = "<div id='reboot_hdr'>Software successfully uploaded.</div>";
+            custom_text += "<div>Please wait while the ACU is restarting.</div>";
+        } else {
+            custom_text = "<div id='reboot_hdr'>Software installation failed.</div>";
+            custom_text += "<form method='get' action='c'>";
+            custom_text += "<input type='hidden' name='pageId' value='upload'>";
+            custom_text += "<input type='submit' value='Ok'></form>";
+            timer = false;
+        }
+
+        if (typeof(upload_res.msg) != 'undefined') {
+            custom_text += "<div>" + upload_res.msg + "</div>";
+        }
+    } else if (msg) {
+        clear = true;
+        custom_text = "<div id='reboot_hdr'>" + msg + "</div>";
+    } else {
+        custom_text = "Not responding. Rebooting?"
+    }
+
+    if (timer) {
+        start_timer();
+    }
+
+    if (clear) {
+        $("#main").empty();
+        $("#main").append("<div id='ajax_response_error'>" + custom_text + '</div>');
+    } else {
+        $("#dep_status").text("");
+        var s = $("#sys_status")
+        s.text(custom_text);
+        s.css({"background-color": "#ff0000", "color": "black"});
+        $("#main :input").attr('disabled', 'disabled');
+        $("a").click(function (e) {
+            alert(custom_text);
+            e.preventDefault();
+            return false;
+        });
+    }
+}
+
+function start_timer() {
+    // Start polling report status
+    if (timer_ref == null)
+        timer_ref = self.setInterval(function() {
+            try_connect();
+        }, 4000);
+}
+
+function stop_timer() {
+    window.clearInterval(timer_ref);
+    timer_ref = null;
+}
+
+function try_connect() {
+    stop_timer();
+    xmlhttp.open("HEAD", "//" + window.location.host, true);
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            // Always redirect to home after re-connection
+            if (xmlhttp.status == 200) {
+                if (typeof(redirect_path) == 'undefined')
+                    window.location.href = "/";
+                else
+                    window.location.href = redirect_path;
+            } else
+                start_timer();
+        }
+    }
+    xmlhttp.send();
+}
+
+$(window).load(function() {
+
+    if (typeof(upload_res) != 'undefined') {
+        start_reboot_handler(true);
+    }
+});

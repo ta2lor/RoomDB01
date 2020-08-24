@@ -1,0 +1,101 @@
+var ADU_TRK_MODE_VMU = 1;
+var ADU_TRK_MODE_NB_PWR = 2;
+var ADU_TRK_MODE_DVB_PWR = 3;
+var ADU_TRK_MODE_DVB_SNR = 4;
+var ADU_TRK_MODE_GSC_PWR = 5;
+var ADU_TRK_MODE_GSC_SNR = 6;
+
+var ADU_SIG_ID_MODE_DVB_NID = 3;
+var ADU_SIG_ID_MODE_DVB_ORB = 4;
+var ADU_SIG_ID_MODE_GSC = 6;
+
+var ADU_POL_HOR = 1;
+var ADU_POL_VER = 2;
+var ADU_POL_LHC = 3;
+var ADU_POL_RHC = 4;
+
+var NOT_SET_STR = "--";
+
+var rx_pol_label_str = "RX polarisation";
+var tx_pol_label_str = "TX polarisation";
+var rx_pol_label_str_service = "Polarisation";
+var tx_pol_label_str_service = "LNB";
+
+function gen_lim_err(txt, min, max, unit) {
+    return txt + " (" + min + " - " + max + " " + unit + ").";
+}
+
+var trk_err = "Enter tracking frequency inside the same band as the RF RX frequency";
+
+if (syscfg.rf.gx) {
+    var RX_FREQ_MIN = 19.2;
+    var RX_FREQ_MAX = 20.2;
+    var RX_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid RX RF frequency"), RX_FREQ_MIN, RX_FREQ_MAX, "GHz");
+
+    var RX_IF_FREQ_MAX = 1950;
+    var RX_BAND1_MAX = RX_FREQ_MAX;
+    var RX_BAND1_ERR = gen_lim_err(LibAcu.dict(trk_err), "[" + RX_FREQ_MIN, RX_FREQ_MAX + "]", "GHz");
+} else {
+    var RX_FREQ_MIN = 10.7;
+    var RX_FREQ_MAX = 12.75;
+    var RX_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid RX RF frequency"), RX_FREQ_MIN, RX_FREQ_MAX, "GHz");
+
+    var RX_IF_FREQ_MAX = 2150;
+
+    var RX_BAND1_MAX = 11.7;
+    var RX_BAND1_ERR = gen_lim_err(LibAcu.dict(trk_err), "[" + RX_FREQ_MIN, RX_BAND1_MAX + "]", "GHz");
+    var RX_BAND2_ERR = gen_lim_err(LibAcu.dict(trk_err), "[" + RX_BAND1_MAX, RX_FREQ_MAX + "]", "GHz");
+}
+
+var SAT_INC_MIN = 0;
+var SAT_INC_MAX = 15;
+
+var ELE_CUTOFF_MIN = 0;
+var ELE_CUTOFF_MAX = 90;
+
+
+if (syscfg.rf.gx) {
+    var TX_FREQ_MIN = 29.0;
+    var TX_FREQ_MAX = 30.0;
+    var TX_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid TX RF frequency"), TX_FREQ_MIN, TX_FREQ_MAX, "GHz");
+} else {
+    var TX_FREQ_MIN = 13.75;
+    var TX_FREQ_MAX = 14.5;
+    var TX_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid TX RF frequency"), TX_FREQ_MIN, TX_FREQ_MAX, "GHz");
+}
+
+var RX_LO_FREQ_MIN = 9.4;
+var RX_LO_FREQ_MAX = 11.30;
+var RX_LO_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid LNB LO frequency"), RX_LO_FREQ_MIN, RX_LO_FREQ_MAX, "GHz");
+
+var RX_IF_FREQ_MIN = 950;
+var RX_IF_FREQ_ERR = gen_lim_err(LibAcu.dict("Enter valid RX IF frequency"), RX_IF_FREQ_MIN, RX_IF_FREQ_MAX, "MHz");
+
+var SYM_RATE_MIN = 1;
+var SYM_RATE_MAX = 45;
+var SYM_RATE_ERR = "Enter valid symbol rate (1 - 45 MS/s)";
+
+var BANDWIDTH_MIN = 8;
+var BANDWIDTH_MAX = 80;
+var BANDWIDTH_ERR = "Enter valid bandwidth (8 - 80 MHz)";
+
+var POL_SKEW_MIN = -45;
+var POL_SKEW_MAX = 45;
+var POL_SKEW_ERR = "Enter polarisation skew in range -45° to 45°";
+
+var NID_MIN = 0;
+var NID_MAX = 65535;
+var NID_ERR = "Enter valid nid (0 - 65535)";
+
+var LONG_ERR = "Enter valid satellite position in range -180° to 180° (or 180° W to 180° E).";
+
+var USER_DEF_SYS_GAIN_LEVEL_MIN = 0.0;
+var USER_DEF_SYS_GAIN_LEVEL_MAX = 65.0;
+var USER_DEF_SYS_GAIN_LEVEL_ERR = "Invalid value. Valid range: 0.0 dB to 65.0 dB.";
+
+// Upload file size limits. Use same file size limits as on server-side.
+var JS_SW_UPLOAD_LIMIT = 20000000;
+var JS_CFG_UPLOAD_LIMIT = 160000;
+var JS_MAN_UPLOAD_LIMIT = 2500000;
+
+var UPLOAD_NO_FILE_SELECTED = "Please select a file";

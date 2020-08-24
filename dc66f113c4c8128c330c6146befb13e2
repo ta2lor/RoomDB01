@@ -1,0 +1,2268 @@
+-- Ver 1.58
+-- Copyright (C) Thrane & Thrane A/S
+-- Lundtoftegaardsvej 93D, DK-2800 Kgs. Lyngby, Denmark
+--
+-- This file is a combination of the following source mibs:
+--   ../../../../system/common/net/mib/src/rfc3418_system_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_maritime_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_navigation_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_properties_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_root_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_sailor_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_softwaredownload_SMIv2.mib
+--   ../../../../system/common/net/mib/src/thrane_systemconfig_SMIv2.mib
+--   src/thrane_7xxx_SMIv2.mib
+--   src/thrane_7xxx_info_SMIv2.mib
+--   src/thrane_7xxx_event_SMIv2.mib
+--   src/thrane_antenna_pointing_SMIv2.mib
+--   src/thrane_blocking_zone_table_SMIv2.mib
+--   src/thrane_modem_SMIv2.mib
+--   src/thrane_tracking_receiver_config_SMIv2.mib
+--   src/thrane_tracking_receiver_data_SMIv2.mib
+--   src/thrane_tt7090_SMIv2.mib
+
+THRANE-TT7080-ALL-SMIV2-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-COMPLIANCE,
+    NOTIFICATION-GROUP,
+    OBJECT-GROUP
+        FROM SNMPv2-CONF
+    Integer32,
+    IpAddress,
+    MODULE-IDENTITY,
+    NOTIFICATION-TYPE,
+    OBJECT-IDENTITY,
+    OBJECT-TYPE,
+    TimeTicks,
+    enterprises,
+    mib-2,
+    snmpModules
+        FROM SNMPv2-SMI
+    DisplayString,
+    TruthValue
+        FROM SNMPv2-TC;
+
+thrane MODULE-IDENTITY
+    LAST-UPDATED "201201030000Z"
+    ORGANIZATION "Thrane & Thrane A/S"
+    CONTACT-INFO
+        "Thrane & Thrane A/S
+         Lundtoftegaardsvej 93 D
+         2800 Kgs. Lyngby
+         Denmark
+         P: +45 39 55 88 00
+         F: +45 39 55 88 88
+         E: info@thrane.com"
+    DESCRIPTION
+        "The Structure of Management Information for the
+        Thrane & Thrane enterprise"
+    REVISION "201201030000Z"
+    DESCRIPTION "V1.7: Textual adjustments"
+    REVISION "201111161613Z"
+    DESCRIPTION "V1.6: Minor SMIv2 syntax correction"
+    REVISION "201004161612Z"
+    DESCRIPTION "V1.5: Minor textual corrections"
+    REVISION "201004151734Z"
+    DESCRIPTION "V1.4: Made the experiment branch invisible"
+    REVISION "201004151620Z"
+    DESCRIPTION "V1.3: Split root MIB into several MIB files"
+    REVISION "201003241603Z"
+    DESCRIPTION "V1.2: Changed MIB name"
+    REVISION "201003231238Z"
+    DESCRIPTION "V1.1: Initial version"
+::= { enterprises 33721 }
+
+snmpMIB OBJECT IDENTIFIER ::= { snmpModules 1 }
+
+-- the System group
+-- a collection of objects common to all managed systems.
+
+system OBJECT IDENTIFIER ::= { mib-2 1 }
+
+sysDescr OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "A textual description of the entity. This value should
+         include the full name and version identification of
+         the system's hardware type, software operating-system,
+         and networking software.
+            ~D0R0W0P0S(System description)G(none)"
+::= { system 1 }
+
+sysObjectID OBJECT-TYPE
+    SYNTAX OBJECT IDENTIFIER
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The vendor's authoritative identification of the
+         network management subsystem contained in the entity.
+         This value is allocated within the SMI enterprises
+         subtree (1.3.6.1.4.1) and provides an easy and
+         unambiguous means for determining `what kind of box' is
+         being managed. For example, if vendor `Flintstones,
+         Inc.' was assigned the subtree 1.3.6.1.4.1.424242,
+         it could assign the identifier 1.3.6.1.4.1.424242.1.1
+         to its `Fred Router'.
+            ~D0R0W0P0S(System object)G(none)"
+::= { system 2 }
+
+sysUpTime OBJECT-TYPE
+    SYNTAX TimeTicks
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The time (in hundredths of a second) since the
+         network management portion of the system was last
+         re-initialized.
+            ~D1R0W0P0S(System uptime)G(thranePropertyFolder3)"
+::= { system 3 }
+
+sysContact OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "The textual identification of the contact person for
+         this managed node, together with information on how
+         to contact this person. If no contact information is
+         known, the value is the zero-length string.
+            ~D0R0W0P0S(System contact)G(none)"
+::= { system 4 }
+
+sysName OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "An administratively-assigned name for this managed
+         node.  By convention, this is the node's fully-qualified
+         domain name. If the name is unknown, the value is
+         the zero-length string.
+            ~D0R0W0P0S(System name)G(none)"
+::= { system 5 }
+
+sysLocation OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "The physical location of this node (e.g., 'telephone
+         closet, 3rd floor'). If the location is unknown, the
+         value is the zero-length string.
+            ~D0R0W0P0S(System location)G(none)"
+::= { system 6 }
+
+sysServices OBJECT-TYPE
+    SYNTAX Integer32 (0..127)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "A value which indicates the set of services that this
+         entity may potentially offer. The value is a sum.
+         This sum initially takes the value zero. Then, for
+         each layer, L, in the range 1 through 7, that this node
+         performs transactions for, 2 raised to (L - 1) is added
+         to the sum. For example, a node which performs only
+         routing functions would have a value of 4 (2^(3-1)).
+         In contrast, a node which is a host offering application
+         services would have a value of 72 (2^(4-1) + 2^(7-1)).
+         Note that in the context of the Internet suite of
+         protocols, values should be calculated accordingly:
+             layer      functionality
+               1        physical (e.g., repeaters)
+               2        datalink/subnetwork (e.g., bridges)
+               3        internet (e.g., supports the IP)
+               4        end-to-end  (e.g., supports the TCP)
+               7        applications (e.g., supports the SMTP)
+         For systems including OSI protocols, layers 5 and 6
+         may also be counted.
+            ~D0R0W0P0S(System services)G(none)"
+::= { system 7 }
+
+-- conformance information
+
+snmpMIBConformance OBJECT IDENTIFIER ::= { snmpMIB 2 }
+snmpMIBCompliances OBJECT IDENTIFIER ::= { snmpMIBConformance 1 }
+snmpMIBGroups      OBJECT IDENTIFIER ::= { snmpMIBConformance 2 }
+
+-- compliance statements
+
+snmpBasicComplianceRev2 MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for SNMP entities which
+         implement the snmpMIB/system module."
+    MODULE MANDATORY-GROUPS
+    { 
+        systemGroup
+    }
+::= { snmpMIBCompliances 3 }
+
+-- units of conformance
+
+systemGroup OBJECT-GROUP
+    OBJECTS
+    {
+        sysDescr,
+        sysObjectID,
+        sysUpTime,
+        sysContact,
+        sysName,
+        sysLocation,
+        sysServices
+    }
+    STATUS current
+    DESCRIPTION
+        "The system group defines objects which are common to all
+         managed systems."
+::= { snmpMIBGroups 6 }
+
+
+thraneRegistrationMaritime OBJECT IDENTIFIER ::= { thraneRegistrationDevices 2 }
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane maritime sub-tree
+-- ----------------------------------------------------------------------------
+thraneManagementMaritime OBJECT IDENTIFIER ::= { thraneManagementDevices 2 }
+thraneProductsMaritime   OBJECT IDENTIFIER ::= { thraneProductsDevices   2 }
+
+
+thraneNavigationIdentifier OBJECT IDENTIFIER ::= { thraneRegistrationGeneric 3 }
+
+thraneNavigationGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 3 }
+
+thraneNavigationModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T Navigation MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneNavigationPositionGroup,
+        thraneNavigationVelocityGroup,
+        thraneNavigationAttitudeGroup,
+        thraneNavigationAttitudeStatisticsGroup
+    }
+::= { thraneNavigationGroups 1 }
+
+thraneNavigationPositionGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttNavPositionAvailableLLA,
+        ttNavPositionLatitude,
+        ttNavPositionLongitude,
+        ttNavPositionAltitude
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the position releated MIB items in this navigation MIB"
+::= { thraneNavigationGroups 2 }
+
+thraneNavigationVelocityGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttNavVelocityAvailableTAGS,
+        ttNavVelocityTrackAngle,
+        ttNavVelocityGroundSpeed
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the velocity releated MIB items in this navigation MIB"
+::= { thraneNavigationGroups 3 }
+
+thraneNavigationAttitudeGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttNavAttitudeAvailableRPY,
+        ttNavAttitudeYaw
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the attitude releated MIB items in this navigation MIB"
+::= { thraneNavigationGroups 4 }
+
+thraneNavigationAttitudeStatisticsGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttNavAttitudeStatRoll,
+        ttNavAttitudeStatPitch,
+        ttNavAttitudeStatYaw
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the attitude releated MIB items in this navigation MIB"
+::= { thraneNavigationGroups 5 }
+
+-- ***************************************************************************
+-- Navigation subtree
+-- ***************************************************************************
+
+-- Location in Thrane MIB tree
+thraneNavigation  OBJECT IDENTIFIER ::= { thraneProductsGeneric 3 }
+
+-- Navigation sub-folders
+thraneNavigationCoordinates           OBJECT IDENTIFIER ::= { thraneNavigation 1 }
+thraneNavigationVelocity              OBJECT IDENTIFIER ::= { thraneNavigation 2 }
+thraneNavigationAttitude              OBJECT IDENTIFIER ::= { thraneNavigation 3 }
+thraneNavigationTechnical             OBJECT IDENTIFIER ::= { thraneNavigation 4 }
+thraneNavigationAttitudeStatistics    OBJECT IDENTIFIER ::= { thraneNavigation 5 }
+
+-- ***************************************************************************
+-- Navigation position coordinates.
+-- --------------------------------
+-- These parameters defines the position coordinates of an object.
+--
+-- The position is 3-dimensional defined in a polar coordinate system
+-- by the parameters:
+--   1) Latitude
+--   2) Longitude
+--   3) Altitude
+--
+-- Alternatively it is also defined in a Cartesian coordinate system
+-- by the parameters:
+--   1) X  (intersects the sphere of the earth at the 0 degree latitude
+--          and the 0 degree longtitude)
+--   2) Y  (intersects the sphere of the earth at the 0 degree latitude
+--          and the 90 degree longtitude)
+--   3) Z  (intersects the sphere of the earth at the north pole)
+--
+-- A third representation of the position is using the NMEA 2.3 format
+-- which consists of a single string containing:
+--   1) Latitude
+--   2) Longitude
+--   3) UTC time
+-- ***************************************************************************
+
+thraneNavigationCoordinatesLLA  OBJECT IDENTIFIER ::= { thraneNavigationCoordinates 1 }
+thraneNavigationCoordinatesECEF OBJECT IDENTIFIER ::= { thraneNavigationCoordinates 2 }
+thraneNavigationCoordinatesNMEA OBJECT IDENTIFIER ::= { thraneNavigationCoordinates 3 }
+
+-- ********************************************************
+-- Latitude / Longitude / Altitude coordinates
+-- In aviation term also known as North-East-Down position
+-- ********************************************************
+
+ttNavPositionAvailableLLA OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "True if the objects of thraneNavigationCoordinatesLLA sub branch are accessible."
+::= { thraneNavigationCoordinatesLLA 1 }
+
+ttNavPositionLatitude OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Latitude in degrees, in aviation terms also called North.
+         Range: -90000000 - 90000000
+         Resolution: 1/1000000 degrees (corresponds to 0.11m).
+         0 is equator, 90000000 is north pole, -90000000 is south pole."
+::= { thraneNavigationCoordinatesLLA 2 }
+
+ttNavPositionLongitude OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Longitude in degrees, in aviation terms also called East.
+         Range: -180000000 - 180000000
+         Resolution: 1/1000000 degrees (corresponds to 0.11m at equator).
+         0 is Greenwich, 180000000 is east, -180000000 is west."
+::= { thraneNavigationCoordinatesLLA 3 }
+
+ttNavPositionAltitude OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Altitude in meters above the mean sea level.
+         In aviation terms also called Down.
+         Resolution: 1/1000m."
+::= { thraneNavigationCoordinatesLLA 4 }
+
+-- ***************************************************************************
+-- Navigation velocity
+-- These parameters defines the velocity of an object.
+--
+-- The velocity is as a 3-dimensional vector defined by the parameters:
+--   1) Velocity north
+--   2) Velocity east
+--   3) Velocity down
+--
+-- Alternatively it is also defined in a Cartesian coordinate system
+-- by the parameters:
+--   1) dx
+--   1) dy
+--   1) dz
+--
+-- Alternatively it is also defined 2-dimensional by the parameters:
+--   1) Ground speed
+--   2) Track angle
+--
+-- A third representation of the velocity is using the NMEA 2.3 format
+-- which consists of a single string containing:
+--   1) Ground speed (true, magnetic)
+--   2) Track angle (true, magnetic)
+-- ***************************************************************************
+
+thraneNavigationVelocityNED  OBJECT IDENTIFIER ::= { thraneNavigationVelocity 1 }
+thraneNavigationVelocityECEF OBJECT IDENTIFIER ::= { thraneNavigationVelocity 2 }
+thraneNavigationVelocityTAGS OBJECT IDENTIFIER ::= { thraneNavigationVelocity 3 }
+thraneNavigationVelocityNMEA OBJECT IDENTIFIER ::= { thraneNavigationVelocity 4 }
+
+-- ***************************
+-- Track angle / ground speed
+-- ***************************
+
+ttNavVelocityAvailableTAGS OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "True if the objects of thraneNavigationVelocityTAGS
+         sub branch are accessible"
+::= { thraneNavigationVelocityTAGS 1 }
+
+ttNavVelocityTrackAngle OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Track angle in degrees.
+         Range: 0 - 359999
+         Resolution: 1/1000 degrees.
+         0 is North, 90000 is East, 180000 is South, 270000 is West."
+::= { thraneNavigationVelocityTAGS 2 }
+
+ttNavVelocityGroundSpeed OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Ground speed in m/s.
+         Resolution: 1/1000 m/s."
+::= { thraneNavigationVelocityTAGS 3 }
+
+-- ***************************************************************************
+-- Navigation Attitude
+-- These parameters defines the Attitude of an object.
+--
+-- The attitude is defined by the 3 parameters:
+--   1) Roll     Angle about the longitudinal axis.
+--   2) Pitch    Angle of attack.
+--   3) Yaw      Angle about vertical body axis.
+-- ***************************************************************************
+
+thraneNavigationAttitudeRPY OBJECT IDENTIFIER ::= { thraneNavigationAttitude 1 }
+
+ttNavAttitudeAvailableRPY OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "True if the objects of thraneNavigationAttitudeRPY sub branch are accessible"
+::= { thraneNavigationAttitudeRPY 1 }
+
+ttNavAttitudeYaw OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Yaw in degrees.
+         Range: -180000 - 180000
+         Resolution: 1/1000 degrees.
+         Yaw angle is defined as acting about the vertical body axis,
+         positive with the nose to the starboard (right).
+         Also known as heading."
+::= { thraneNavigationAttitudeRPY 4 }
+
+-- ***************************************************************************
+-- Navigation Attitude Statistics
+-- These parameters defines the Statistical Attitude of an object.
+--
+-- The statistical attitude for Roll is defined by the 3 parameters:
+--   1) RollAvg   Average Roll value.
+--   2) RollMax   Maximum Roll value.
+--   3) RollMin   Minimum Roll value.
+-- The statistical attitude for Pitch is defined by the 3 parameters:
+--   1) PitchAvg  Average Pitch value.
+--   2) PitchMax  Maximum Pitch value.
+--   3) PitchMin  Minimum Pitch value.
+-- The statistical attitude for Yaw is defined by the 3 parameters:
+--   1) YawAvg    Average Yaw value.
+--   2) YawMax    Maximum Yaw value.
+--   3) YawMin    Minimum Yaw value.
+-- ***************************************************************************
+
+ttNavAttitudeStatRoll   OBJECT IDENTIFIER ::= { thraneNavigationAttitudeStatistics 1 }
+ttNavAttitudeStatPitch  OBJECT IDENTIFIER ::= { thraneNavigationAttitudeStatistics 2 }
+ttNavAttitudeStatYaw    OBJECT IDENTIFIER ::= { thraneNavigationAttitudeStatistics 3 }
+
+ttNavAttitudeStatRollAvg OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Roll's Average in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The average of Roll angle of the vessel over a period of time."
+::= { ttNavAttitudeStatRoll 1 }
+
+ttNavAttitudeStatRollMax OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Roll's Maximum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The maximum of Roll angle of the vessel over a period of time."
+::= { ttNavAttitudeStatRoll 2 }
+
+ttNavAttitudeStatRollMin OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Roll's Minimum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The minimum of Roll angle of the vessel over a period of time."
+::= { ttNavAttitudeStatRoll 3 }
+
+ttNavAttitudeStatPitchAvg OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Pitch's Average in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The average of Pitch angle of the vessel over a period of time."
+::= { ttNavAttitudeStatPitch 1 }
+
+ttNavAttitudeStatPitchMax OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Pitch's Maximum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The maximum of Pitch angle of the vessel over a period of time."
+::= { ttNavAttitudeStatPitch 2 }
+
+ttNavAttitudeStatPitchMin OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Pitch's Minimum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The minimum of Pitch angle of the vessel over a period of time."
+::= { ttNavAttitudeStatPitch 3 }
+
+ttNavAttitudeStatYawAvg OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Yaw's Average in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The average of Yaw angle of the vessel over a period of time."
+::= { ttNavAttitudeStatYaw 1 }
+
+ttNavAttitudeStatYawMax OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Yaw's Maximum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The maximum of Yaw angle of the vessel over a period of time."
+::= { ttNavAttitudeStatYaw 2 }
+
+ttNavAttitudeStatYawMin OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Yaw's Minimum in degrees.
+         Range: 0 - 360000
+         Resolution: 1/1000 degrees.
+         The minimum of Yaw angle of the vessel over a period of time."
+::= { ttNavAttitudeStatYaw 3 }
+
+
+thranePropertyFoldersGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 8 }
+
+thranePropertyFolders OBJECT IDENTIFIER ::= { thraneProductsGeneric 8 }
+
+thranePropertyFolder1 OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+    "~D0R0W0P0S(System properties)G(System)"
+::= { thranePropertyFolders 1 }
+
+thranePropertyFolder2 OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+    "~D0R0W0P0S(ADU properties)G(Device)"
+::= { thranePropertyFolders 2 }
+
+thranePropertyFolder3 OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+    "~D0R0W0P0S(System status)G(DeviceStat)"
+::= { thranePropertyFolders 3 }
+
+
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane registration sub-tree
+-- ----------------------------------------------------------------------------
+
+thraneRegistration OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneRegistration is the root for Thrane&Thrane MIB
+         module registration"
+::= { thrane 1 }
+
+thraneRegistrationGeneric OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneRegistrationGenericModules is the root of MIB
+         module registration for common Thrane&Thrane modules"
+::= { thraneRegistration 1 }
+
+thraneRegistrationDevices OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneRegistrationDevices is the root of MIB module
+         registration for Thrane&Thrane devices"
+::= { thraneRegistration 2 }
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane management sub-tree 
+-- ----------------------------------------------------------------------------
+
+thraneManagement OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneManagement is the root for Thrane&Thrane MIB
+         module management"
+::= { thrane 2 }
+
+thraneManagementGeneric OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneManagementGeneric is the root for Thrane&Thrane MIB
+         module management for common Thrane&Thrane modules"
+::= { thraneManagement 1 }
+
+thraneManagementDevices OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneManagementDevices is the root for Thrane&Thrane MIB
+         module management for Thrane&Thrane devices"
+::= { thraneManagement 2 }
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane products sub-tree 
+-- ----------------------------------------------------------------------------
+
+thraneProducts OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneProducts is the root for Thrane&Thrane MIB module objects"
+::= { thrane 3 }
+
+thraneProductsGeneric OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneProductsGeneric is the root for common Thrane&Thrane MIB
+         module objects"
+::= { thraneProducts 1 }
+
+thraneProductsDevices OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "thraneProductsGeneric is the root for device specific Thrane&Thrane
+         MIB module objects"
+::= { thraneProducts 2 }
+
+
+thraneRegistrationSailor OBJECT IDENTIFIER ::= { thraneRegistrationMaritime 1 }
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane Sailor sub-tree
+-- ----------------------------------------------------------------------------
+thraneManagementSailor OBJECT IDENTIFIER ::= { thraneManagementMaritime 1 }
+thraneProductsSailor   OBJECT IDENTIFIER ::= { thraneProductsMaritime   1 }
+
+
+thraneSoftwareDownloadIdentifier OBJECT IDENTIFIER ::= { thraneRegistrationGeneric 2 }
+
+thraneSoftwareDownloadGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 2 }
+
+thraneSoftwareDownloadModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION 
+        "The compliance statement for entities which
+         implement the T&T software download MIB"
+    MODULE MANDATORY-GROUPS 
+    {
+        thraneSoftwareDownloadNotificationGroup,
+        thraneSoftwareDownloadParameterGroup
+    }
+::= { thraneSoftwareDownloadGroups 1 }
+
+thraneSoftwareDownloadParameterGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttSoftwareDownloadProtocol,
+        ttSoftwareDownloadIpAddress,
+        ttSoftwareDownloadPortNumber,
+        ttSoftwareDownloadFileName,
+        ttSoftwareDownloadControl,
+        ttSoftwareDownloadStatus,
+        ttSoftwareDownloadErrorDescription,
+        ttSoftwareDownloadProgress
+    }
+    STATUS current
+    DESCRIPTION 
+        "Groups all of the software download related MIB parameters"
+::= { thraneSoftwareDownloadGroups 2 }
+
+thraneSoftwareDownloadNotificationGroup NOTIFICATION-GROUP
+    NOTIFICATIONS
+    {
+        ttSoftwareDownloadTrap
+    }
+    STATUS current
+    DESCRIPTION 
+        "Groups all of the software download related traps/notifications"
+::= { thraneSoftwareDownloadGroups 3 }
+
+-- ***************************************************************************
+-- Software download sub-tree
+-- ***************************************************************************
+
+thraneSoftwareDownload OBJECT IDENTIFIER ::= { thraneProductsGeneric 2 }
+
+thraneSoftwareDownloadTraps OBJECT IDENTIFIER ::= { thraneSoftwareDownload 0 }
+
+ttSoftwareDownloadProtocol OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        tftp(1)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Defines which protocol should be used to the software download
+            ~D0R0W0P0S(Software Download Protocol)G(none)"
+    DEFVAL { 1 }
+::= { thraneSoftwareDownload 1 }
+
+ttSoftwareDownloadIpAddress OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "IP-Address of the TFTP server
+            ~D0R0W0P0S(Software Download IP)G(none)"
+::= { thraneSoftwareDownload 2 }
+
+ttSoftwareDownloadPortNumber OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Port number of the TFTP server. Default value is 69
+            ~D0R0W0P0S(Software Download Port)G(none)"
+    DEFVAL { 69 }
+::= { thraneSoftwareDownload 3 }
+
+ttSoftwareDownloadFileName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "The name of the file to retrieve from the TFTP server
+            ~D0R0W0P0S(Software Download Filename)G(none)"
+::= { thraneSoftwareDownload 4 }
+
+ttSoftwareDownloadControl OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        stop(1),
+        start(2)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "1: Stop (abort) file transfer
+         2: Start the file transfer
+         A read of this parameter returns the last written value
+            ~D0R0W0P0S(Software Download Control)G(none)"
+    DEFVAL { 1 }
+::= { thraneSoftwareDownload 5 }
+
+ttSoftwareDownloadStatus OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        init(1),
+        started(2),
+        aborted(3),
+        failed(4),
+        ready(5)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Status of file transfer
+            ~D1R0W0P0S(Software download status)G(thranePropertyFolder3)"
+::= { thraneSoftwareDownload 6 }
+
+ttSoftwareDownloadErrorDescription OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Textual description of the reason for an error that occurred 
+         during the software download
+            ~D1R0W0P0S(Software download error description)G(thranePropertyFolder3)"
+::= { thraneSoftwareDownload 7 }
+
+ttSoftwareDownloadProgress OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Progress status of the software download, range: 0-100%.
+         If this feature is unsupported, the progress value should be -1
+            ~D1R0W0P0S( System property)G(none)"
+::= { thraneSoftwareDownload 8 }
+
+ttSoftwareDownloadTrap NOTIFICATION-TYPE
+    OBJECTS
+    {
+        ttSoftwareDownloadStatus
+    }
+    STATUS current
+    DESCRIPTION 
+        "This (optional) trap is sent, if the software download status changes"
+::= { thraneSoftwareDownloadTraps 1 }
+
+
+thraneSystemConfigIdentifier OBJECT IDENTIFIER ::= { thraneRegistrationGeneric 1 }
+
+thraneSystemConfigGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 1 }
+
+thraneSystemConfigModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION 
+        "The compliance statement for entities which
+         implement the T&T system config MIB"
+    MODULE MANDATORY-GROUPS 
+    {
+        thraneSystemConfigGroup
+    }
+::= { thraneSystemConfigGroups 1 }
+
+thraneSystemConfigGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttSystemConfigModelNumber,
+        ttSystemConfigSerialNumber,
+        ttSystemConfigHardwarePartNumber,
+        ttSystemConfigSoftwareVersion,
+        ttSystemConfigSoftwareBuildNumber,
+        ttSystemConfigSoftwareBuildId,
+        ttSystemConfigBootCodeVersion,
+        ttSystemConfigDefault,
+        ttSystemConfigReset,
+        ttSystemConfigPosixTime,
+        ttSystemConfigISOTime,
+        ttSystemConfigAliasName,
+        ttSystemConfigSysName,
+        ttSystemConfigAntPartName
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the system config related MIB items"
+::= { thraneSystemConfigGroups 2 }
+
+-- ***************************************************************************
+-- System config sub-tree
+-- ***************************************************************************
+
+thraneSystemConfig OBJECT IDENTIFIER ::= { thraneProductsGeneric 1 }
+
+ttSystemConfigModelNumber OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The model number of the unit
+            ~D0R0W0P0S(Model number)G(none)"
+::= { thraneSystemConfig 1 }
+
+ttSystemConfigSerialNumber OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The serial number of the unit
+            ~D0R0W0P0S(Serial number)G(thranePropertyFolder1)"
+::= { thraneSystemConfig 2 }
+
+ttSystemConfigHardwarePartNumber OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Partnumber for the Mainboard
+            ~D0R0W0P0S(Hardware number)G(none)"
+::= { thraneSystemConfig 3 }
+
+ttSystemConfigSoftwareVersion OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The version number of the current application code
+            ~D0R0W0P0S(Software version)G(thranePropertyFolder1)"
+::= { thraneSystemConfig 4 }
+
+ttSystemConfigSoftwareBuildNumber OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The build number of the current application code
+            ~D0R0W0P0S(Software build no.)G(thranePropertyFolder1)"
+::= { thraneSystemConfig 5 }
+
+ttSystemConfigSoftwareBuildId OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The build ID of the current application code
+            ~D0R0W0P0S(Software build ID)G(none)"
+::= { thraneSystemConfig 6 }
+
+ttSystemConfigBootCodeVersion OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The version number of the current boot code
+            ~D0R0W0P0S(Config Boot version)G(none)"
+::= { thraneSystemConfig 7 }
+
+ttSystemConfigDefault OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        notDefault(1),
+        default(2),
+        defaultAndReset(3)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Warning! Sets all settings to a default value in the unit
+            ~D0R0W0P0S(Config Default)G(none)"
+::= { thraneSystemConfig 8 }
+
+ttSystemConfigReset OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        notReset(1),
+        reset(2)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Warning! Resets the unit.
+         During startup this value will stay '2:reset' until
+         device is ready to receive commands
+            ~D0R0W0P0S(Reset)G(none)"
+::= { thraneSystemConfig 9 }
+
+ttSystemConfigPosixTime OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Number of seconds elapsed since midnight january 1, 1970
+         not counting leap seconds. Also known as Unix epoch time.
+         Example: date: Sun, 20 Jun, 13:26:52 -> 1277040412
+            ~D0R0W0P0S(Posix Time)G(none)"
+::= { thraneSystemConfig 10 }
+
+ttSystemConfigISOTime OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Date and time in ISO 8601 format: YYYY-MM-DD HH:MM:SS
+         Example: date: Sun, 20 Jun, 13:26:52 -> 2010-06-20 13:26:52
+            ~D1R0W0P0S(ISO time)G(thranePropertyFolder3)"
+::= { thraneSystemConfig 11 }
+
+ttSystemConfigAliasName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "User configurable device name to identify specific device
+         amongst multiple devices on the same network.
+            ~D0R0W0P0S(Alias)G(thranePropertyFolder1)"
+::= { thraneSystemConfig 12 }
+
+ttSystemConfigSysName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Holding name for device which have several components
+         (E.g. Base unit and antenna), and maybe having different
+         names due to combinations of different components.
+            ~D0R0W0P0S(System name)G(thranePropertyFolder1)"
+::= { thraneSystemConfig 13 }
+
+ttSystemConfigAntPartName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Antenna part name"
+::= { thraneSystemConfig 14 }
+
+
+thraneRegistration7xxx OBJECT IDENTIFIER ::= { thraneRegistrationSailor 7000 }
+
+-- ----------------------------------------------------------------------------
+-- Thrane & Thrane VSAT/Ka/TV sub-tree
+-- ----------------------------------------------------------------------------
+thraneManagement7xxx OBJECT IDENTIFIER ::= { thraneManagementSailor 7000 }
+thraneProducts7xxx   OBJECT IDENTIFIER ::= { thraneProductsSailor 7000 }
+
+
+thrane7xxxEventIdentifier OBJECT IDENTIFIER ::= { thraneRegistration7xxx 2 }
+
+thrane7xxxEventGroups OBJECT IDENTIFIER ::= { thraneManagement7xxx 2 }
+
+thrane7xxxEventModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T 7xxx event MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        tt7xxxEventGroup,
+        tt7xxxEventNotificationGroup,
+        tt7xxxEventNotificationParameterGroup
+    }
+::= { thrane7xxxEventGroups 1 }
+
+tt7xxxEventGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxEventTimeStamp,
+        tt7xxxEventId,
+        tt7xxxEventUnit,
+        tt7xxxEventSeverity,
+        tt7xxxEventText,
+        tt7xxxEventStateText,
+        tt7xxxEventOccurrence
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the event MIB items"
+::= { thrane7xxxEventGroups 2 }
+
+tt7xxxEventNotificationGroup NOTIFICATION-GROUP
+    NOTIFICATIONS
+    {
+        tt7xxxEventNotification
+    }
+    STATUS current
+    DESCRIPTION
+        "Event Notification Group"
+::= { thrane7xxxEventGroups 3 }
+
+tt7xxxEventNotificationParameterGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxEventNotificationTimestamp,
+        tt7xxxEventNotificationId,
+        tt7xxxEventNotificationUnit,
+        tt7xxxEventNotificationSeverity,
+        tt7xxxEventNotificationText,
+        tt7xxxEventNotificationState,
+        tt7xxxEventNotificationOccurrence
+    }
+    STATUS current
+    DESCRIPTION
+        "Notification Parameters"
+::= { thrane7xxxEventGroups 4 }
+
+-- ***************************************************************************
+-- Event sub-tree
+-- ***************************************************************************
+
+thrane7xxxEvent OBJECT IDENTIFIER ::= { thraneProducts7xxx 2 }
+
+tt7xxxEventTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF Tt7xxxEventEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Table containing lines of active events"
+::= { thrane7xxxEvent 1 }
+
+tt7xxxEventEntry OBJECT-TYPE
+    SYNTAX Tt7xxxEventEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Table row definition"
+    INDEX { tt7xxxEventIndex }
+::= { tt7xxxEventTable 1 }
+
+Tt7xxxEventEntry ::=
+    SEQUENCE {
+        tt7xxxEventIndex
+            Integer32,
+        tt7xxxEventTimeStamp
+            Integer32,
+        tt7xxxEventId
+            DisplayString,
+        tt7xxxEventUnit
+            DisplayString,
+        tt7xxxEventSeverity
+            DisplayString,
+        tt7xxxEventText
+            DisplayString,
+        tt7xxxEventStateText
+            DisplayString,
+        tt7xxxEventOccurrence
+            Integer32
+    }
+
+tt7xxxEventIndex OBJECT-TYPE
+    SYNTAX Integer32 (1..32768)
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Index to the table row"
+::= { tt7xxxEventEntry 1 }
+
+tt7xxxEventTimeStamp OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Unix time (seconds since the epoch 1-JAN-1970 00:00)
+         Time is UTC"
+::= { tt7xxxEventEntry 2 }
+
+tt7xxxEventId OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event identifier"
+::= { tt7xxxEventEntry 3 }
+
+tt7xxxEventUnit OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Unit on where the event occurred"
+::= { tt7xxxEventEntry 4 }
+
+tt7xxxEventSeverity OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Severity"
+::= { tt7xxxEventEntry 5 }
+
+tt7xxxEventText OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Textual event description."
+::= { tt7xxxEventEntry 6 }
+
+tt7xxxEventStateText OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "State of the event."
+::= { tt7xxxEventEntry 8 }
+
+tt7xxxEventOccurrence OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Occurrences of the event"
+::= { tt7xxxEventEntry 9 }
+
+tt7xxxEventNotificationParameter OBJECT IDENTIFIER ::= { thrane7xxxEvent 2 }
+
+tt7xxxEventNotificationTimestamp OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Identifier"
+::= { tt7xxxEventNotificationParameter 1 }
+
+tt7xxxEventNotificationId OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Identifier"
+::= { tt7xxxEventNotificationParameter 2 }
+
+tt7xxxEventNotificationUnit OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Identifier"
+::= { tt7xxxEventNotificationParameter 3 }
+
+tt7xxxEventNotificationSeverity OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Identifier"
+::= { tt7xxxEventNotificationParameter 4 }
+
+tt7xxxEventNotificationText OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event Text"
+::= { tt7xxxEventNotificationParameter 5 }
+
+tt7xxxEventNotificationState OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Event State"
+::= { tt7xxxEventNotificationParameter 6 }
+
+tt7xxxEventNotificationOccurrence OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Total Event Occurrences"
+::= { tt7xxxEventNotificationParameter 7 }
+
+thrane7xxxEventNotifications OBJECT IDENTIFIER ::= { thrane7xxxEvent 0 }
+
+tt7xxxEventNotification NOTIFICATION-TYPE
+    OBJECTS
+    {
+        tt7xxxEventNotificationTimestamp,
+        tt7xxxEventNotificationId,
+        tt7xxxEventNotificationUnit,
+        tt7xxxEventNotificationSeverity,
+        tt7xxxEventNotificationText,
+        tt7xxxEventNotificationState,
+        tt7xxxEventNotificationOccurrence
+    }
+    STATUS current
+    DESCRIPTION
+        "Event Notification Trap"
+::= { thrane7xxxEventNotifications 1 }
+
+
+thrane7xxxInfoIdentifier OBJECT IDENTIFIER ::= { thraneRegistration7xxx 3 }
+
+tt7xxxInfo           OBJECT IDENTIFIER ::= { thraneProducts7xxx 3 }
+tt7xxxInfoGroups     OBJECT IDENTIFIER ::= { thraneManagement7xxx 3 }
+
+tt7xxxInfoModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the tt7xxx Info MIB. Not for other use than the TMA"
+    MODULE MANDATORY-GROUPS
+    {
+        tt7xxxInfoGroup
+    }
+::= { tt7xxxInfoGroups 1 }
+
+
+tt7xxxInfoGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxAduMainPcbSerial,
+        tt7xxxAcuMainPcbSerial,
+        tt7xxxAduLifetime,
+        tt7xxxAduUnitSerial
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the tt7xxx info MIB parameters"
+::= { tt7xxxInfoGroups 2 }
+
+tt7xxxAduMainPcbSerial OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Serial number of main PCB in the ADU.
+         Reserved for TMA use only"
+::= { tt7xxxInfo 1 }
+
+tt7xxxAcuMainPcbSerial OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Serial number of main PCB in the ACU
+         Reserved for TMA use only"
+::= { tt7xxxInfo 2 }
+
+tt7xxxAduLifetime OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Life time counter of the ADU
+         Reserved for TMA use only"
+::= { tt7xxxInfo 3 }
+
+tt7xxxAduUnitSerial OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Unit serial number of the ADU
+            ~D1R0W0P0S(ADU serial number)G(thranePropertyFolder2)"
+::= { tt7xxxInfo 4 }
+
+
+thraneAntennaPointingIdentifier OBJECT IDENTIFIER ::= { thraneRegistrationGeneric 14 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneAntennaPointingGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 14 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneAntennaPointingModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T antenna pointing MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneAntennaPointingGroup
+    }
+::= { thraneAntennaPointingGroups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneAntennaPointingGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttRelativeAzimuth,
+        ttRelativeElevation,
+        ttPolarisationSkew,
+        ttGeographicalAzimuth,
+        ttGeographicalElevation
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the Antenna Pointing related MIB parameters"
+::= { thraneAntennaPointingGroups 2 }
+
+
+-- ***************************************************************************
+-- Antenna Pointing sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneAntennaPointing OBJECT IDENTIFIER ::= { thraneProductsGeneric 14 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneAntennaPointingGroup
+--  ************************************************
+
+ttRelativeAzimuth OBJECT-TYPE
+  SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Relative azimuth
+         Resolution 0.001 degrees"
+::= { thraneAntennaPointing 1 }
+
+ttRelativeElevation OBJECT-TYPE
+  SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Relative elevation
+         Resolution 0.001 degrees"
+::= { thraneAntennaPointing 2 }
+
+ttPolarisationSkew OBJECT-TYPE
+  SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Polarisation skew
+         Resolution 0.001 degrees"
+::= { thraneAntennaPointing 3 }
+
+ttGeographicalAzimuth OBJECT-TYPE
+  SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Geographical azimuth
+         Resolution 0.001 degrees"
+::= { thraneAntennaPointing 4 }
+
+ttGeographicalElevation OBJECT-TYPE
+  SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Geographical Elevation
+         Resolution 0.001 degrees"
+::= { thraneAntennaPointing 5 }
+
+
+thraneBlockingZoneIdentifier OBJECT IDENTIFIER ::= { thraneRegistrationGeneric 15 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneBlockingZoneGroups OBJECT IDENTIFIER ::= { thraneManagementGeneric 15 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneBlockingZoneModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T Blocking Zone Table MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneBlockingZoneGroup
+    }
+::= { thraneBlockingZoneGroups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneBlockingZoneGroup OBJECT-GROUP
+    OBJECTS
+    {
+        ttBlockingZoneEnabled,
+        ttBlockingZoneType,
+        ttBlockingZoneAzimuthStart,
+        ttBlockingZoneAzimuthEnd,
+        ttBlockingZoneElevationLow,
+        ttBlockingZoneElevationHigh
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the Blocking Zone related MIB parameters"
+::= { thraneBlockingZoneGroups 2 }
+
+
+-- ***************************************************************************
+-- Blocking Zone sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneBlockingZone OBJECT IDENTIFIER ::= { thraneProductsGeneric 15 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneBlockingZoneGroup
+--  ************************************************
+
+ttBlockingZoneTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF TtBlockingZoneEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Table for blocking zones"
+::= { thraneBlockingZone 1 }
+
+ttBlockingZoneEntry OBJECT-TYPE
+    SYNTAX TtBlockingZoneEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Table entry to hold the blocking zones"
+    INDEX { ttBlockingZoneIndex }
+::= { ttBlockingZoneTable 1 }
+
+TtBlockingZoneEntry ::= SEQUENCE
+{
+    ttBlockingZoneIndex
+        Integer32,
+    ttBlockingZoneEnabled
+        INTEGER,
+    ttBlockingZoneType
+        INTEGER,
+    ttBlockingZoneAzimuthStart
+        Integer32,
+    ttBlockingZoneAzimuthEnd
+        Integer32,
+    ttBlockingZoneElevationLow
+        Integer32,
+    ttBlockingZoneElevationHigh
+        Integer32
+}
+
+ttBlockingZoneIndex OBJECT-TYPE
+    SYNTAX Integer32 (1..8)
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Index of the blocking zone table"
+::= { ttBlockingZoneEntry 1 }
+
+ttBlockingZoneEnabled OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        no(1),
+        yes(2)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Blocking zone enabled"
+::= { ttBlockingZoneEntry 2 }
+
+ttBlockingZoneType OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        txallowed(1),
+        txprohibited(2),
+        mechboom(3),
+        mechdish(4)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Zone type"
+::= { ttBlockingZoneEntry 3 }
+
+ttBlockingZoneAzimuthStart OBJECT-TYPE
+    SYNTAX Integer32 (0..360000)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Azimuth start angle.
+         Resolution 0.001 degree"
+::= { ttBlockingZoneEntry 4 }
+
+ttBlockingZoneAzimuthEnd OBJECT-TYPE
+    SYNTAX Integer32 (0..360000)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Azimuth end angle.
+         Resolution 0.001 degree"
+::= { ttBlockingZoneEntry 5 }
+
+ttBlockingZoneElevationLow OBJECT-TYPE
+    SYNTAX Integer32 (-90000..100000)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Elevation low angle.
+         Resolution 0.001 degree"
+::= { ttBlockingZoneEntry 6 }
+
+ttBlockingZoneElevationHigh OBJECT-TYPE
+    SYNTAX Integer32 (-90000..100000)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Elevation high angle.
+         Resolution 0.001 degree"
+::= { ttBlockingZoneEntry 7 }
+
+
+
+thraneModemDataIdentifier OBJECT IDENTIFIER ::= { thraneRegistration7xxx 5 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneModemDataGroups OBJECT IDENTIFIER ::= { thraneManagement7xxx 5 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneModemDataModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T Tracking Receiver Data MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneModemDataGroup
+    }
+::= { thraneModemDataGroups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneModemDataGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxModemRxLock,
+        tt7xxxModemSignalStrength,
+        tt7xxxModemTxEnable
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the Tracking Receiver Data related MIB parameters"
+::= { thraneModemDataGroups 2 }
+
+
+-- ***************************************************************************
+-- Tracking Receiver sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneModemData OBJECT IDENTIFIER ::= { thraneProducts7xxx 5 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneModemDataGroup
+--  ************************************************
+
+tt7xxxModemRxLock OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem Rx lock indication"
+::= { thraneModemData 1 }
+
+tt7xxxModemSignalStrength OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem signal strength indication, no
+         unit (use relatively)"
+::= { thraneModemData 2 }
+
+tt7xxxModemTxEnable OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem has enabled Tx"
+::= { thraneModemData 3 }
+
+
+thraneTrackingReceiverConfigIdentifier OBJECT IDENTIFIER ::= { thraneRegistration7xxx 1 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTrackingReceiverConfigGroups OBJECT IDENTIFIER ::= { thraneManagement7xxx 1 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneTrackingReceiverConfigModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T Tracking Receiver Config MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneTrackingReceiverConfigGroup
+    }
+::= { thraneTrackingReceiverConfigGroups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneTrackingReceiverConfigGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxTrackingReceiverFrequency,
+        tt7xxxTrackingReceiverMode,
+        tt7xxxTrackingReceiverDvbNid,
+        tt7xxxTrackingReceiverSymbolRate
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the Tracking Receiver Config related MIB parameters"
+::= { thraneTrackingReceiverConfigGroups 2 }
+
+
+-- ***************************************************************************
+-- Tracking Receiver sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTrackingReceiverConfig OBJECT IDENTIFIER ::= { thraneProducts7xxx 1 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneTrackingReceiverConfigGroup
+--  ************************************************
+
+tt7xxxTrackingReceiverFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Nominal tracking frequency.
+         Resolution 1 kHz"
+::= { thraneTrackingReceiverConfig 1 }
+
+tt7xxxTrackingReceiverMode OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        undefined(0),
+        rssi(1),
+        narrowband(2),
+        wideband(3),
+        dvbs(4),
+        gsc-power(5),
+        gsc-snr(6)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Tracking receiver mode"
+::= { thraneTrackingReceiverConfig 2 }
+
+tt7xxxTrackingReceiverDvbNid OBJECT-TYPE
+    SYNTAX Integer32 (0..65535)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "DVB Network ID"
+::= { thraneTrackingReceiverConfig 3 }
+
+tt7xxxTrackingReceiverSymbolRate OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Symbol rate in kS/s,
+         only valid for dvbs/gsc"
+::= { thraneTrackingReceiverConfig 4 }
+
+
+
+thraneTrackingReceiverDataIdentifier OBJECT IDENTIFIER ::= { thraneRegistration7xxx 4 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTrackingReceiverDataGroups OBJECT IDENTIFIER ::= { thraneManagement7xxx 4 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneTrackingReceiverDataModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T Tracking Receiver Data MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneTrackingReceiverDataGroup
+    }
+::= { thraneTrackingReceiverDataGroups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneTrackingReceiverDataGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7xxxTrackingReceiverSignalStrength
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the Tracking Receiver Data related MIB parameters"
+::= { thraneTrackingReceiverDataGroups 2 }
+
+
+-- ***************************************************************************
+-- Tracking Receiver sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTrackingReceiverData OBJECT IDENTIFIER ::= { thraneProducts7xxx 4 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneTrackingReceiverDataGroup
+--  ************************************************
+
+tt7xxxTrackingReceiverSignalStrength OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Tracking receiver signal strength indication, no
+         unit (use relatively)"
+::= { thraneTrackingReceiverData 1 }
+
+
+thraneTt7090Identifier OBJECT IDENTIFIER ::= { thraneRegistrationSailor 7090 }
+
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTt7090Groups OBJECT IDENTIFIER ::= { thraneManagementSailor 7090 }
+
+
+--  ************************************************
+--  Module compliance
+--  ************************************************
+
+thraneTt7090ModuleCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
+        "The compliance statement for entities which
+         implement the T&T TT7090 MIB"
+    MODULE MANDATORY-GROUPS
+    {
+        thraneTt7090DashboardGroup,
+        thraneTt7090CurrentProfileConfigGroup
+    }
+::= { thraneTt7090Groups 1 }
+
+
+--  ************************************************
+--  Object groups
+--  ************************************************
+
+thraneTt7090DashboardGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7090SystemStatus,
+        tt7090SatelliteLongitude,
+        tt7090RxRfFrequency,
+        tt7090RxLoFrequency,
+        tt7090RxIfFrequency,
+        tt7090TxRfFrequency,
+        tt7090TxLoFrequency,
+        tt7090TxIfFrequency,
+        tt7090RxPolarisation,
+        tt7090TxPolarisation,
+        tt7090TrackingFrequency,
+        tt7090ModemTypeName,
+        tt7090SystemLogon,
+        tt7090DualAntennaMode,
+        tt7090DualAntennaStatus
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the TT7090 Dashboard related MIB parameters"
+::= { thraneTt7090Groups 2 }
+
+thraneTt7090CurrentProfileConfigGroup OBJECT-GROUP
+    OBJECTS
+    {
+        tt7090SatelliteProfileName,
+        tt7090NominalSatelliteLongitude,
+        tt7090SatelliteMaxInclination,
+        tt7090SatelliteSkew,
+        tt7090ElevationCutoff,
+        tt7090ModemProfileName,
+        tt7090ModemType,
+        tt7090ReferenceOsc
+    }
+    STATUS current
+    DESCRIPTION
+        "Groups all of the TT7090 Current Profile Config related MIB parameters"
+::= { thraneTt7090Groups 3 }
+
+
+-- ***************************************************************************
+-- TT7090 sub-tree
+-- ***************************************************************************
+
+--  ************************************************
+--  Location in Thrane MIB tree
+--  ************************************************
+
+thraneTt7090 OBJECT IDENTIFIER ::= { thraneProductsSailor 7090 }
+
+
+--  ************************************************
+--  Declaration of main branches in this module
+--  ************************************************
+
+thraneTt7090CurrentProfileConfig OBJECT IDENTIFIER ::= { thraneTt7090 1 }
+thraneTt7090Dashboard            OBJECT IDENTIFIER ::= { thraneTt7090 2 }
+
+
+--  ************************************************
+--  Parameters
+--  ************************************************
+
+--  ************************************************
+--  The thraneTt7090CurrentProfileConfigGroup
+--  ************************************************
+
+tt7090SatelliteProfileName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Name of selected satellite profile"
+::= { thraneTt7090CurrentProfileConfig 1 }
+
+tt7090NominalSatelliteLongitude OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Nominal Satellite longitude.
+         Resolution 0.001 degree"
+::= { thraneTt7090CurrentProfileConfig 2 }
+
+tt7090SatelliteMaxInclination OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Max satellite inclination.
+         Resolution 0.001 degree"
+::= { thraneTt7090CurrentProfileConfig 3 }
+
+tt7090SatelliteSkew OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Satellite misalignment.
+         Resolution 0.001 degree"
+::= { thraneTt7090CurrentProfileConfig 4 }
+
+tt7090ElevationCutoff OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Elevation cutoff
+         Resolution 0.001 degree"
+::= { thraneTt7090CurrentProfileConfig 5 }
+
+tt7090ModemProfileName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem profile name"
+::= { thraneTt7090CurrentProfileConfig 6 }
+
+tt7090ModemType OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem type"
+::= { thraneTt7090CurrentProfileConfig 7 }
+
+tt7090ReferenceOsc OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        internal(0),
+        externalrx(1),
+        externaltx(2)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Reference osc"
+::= { thraneTt7090CurrentProfileConfig 8 }
+
+
+--  ************************************************
+--  The thraneTt7090Dashboard
+--  ************************************************
+
+tt7090SystemStatus OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "System status
+            ~D1R0W0P0S(System status)G(thranePropertyFolder3)"
+::= { thraneTt7090Dashboard 1 }
+
+tt7090SatelliteLongitude OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Satellite longitude.
+         Resolution 0.001 degree"
+::= { thraneTt7090Dashboard 2 }
+
+
+tt7090RxRfFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "RX RF frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 3 }
+
+tt7090RxLoFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "RX LO frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 4 }
+
+tt7090RxIfFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "RX IF frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 5 }
+
+tt7090TxRfFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "TX RF frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 6 }
+
+tt7090TxLoFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "TX LO frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 7 }
+
+tt7090TxIfFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "TX IF frequency
+        Resolution 1 kHz"
+::= { thraneTt7090Dashboard 8 }
+
+tt7090RxPolarisation OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        undefined(0),
+        horizontal(1),
+        vertical(2),
+        lefthand(3),
+        righthand(4)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "RX H/V polarisation"
+::= { thraneTt7090Dashboard 9 }
+
+tt7090TxPolarisation OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        undefined(0),
+        horizontal(1),
+        vertical(2),
+        lefthand(3),
+        righthand(4)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "TX H/V polarisation"
+::= { thraneTt7090Dashboard 10 }
+
+tt7090TrackingFrequency OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Tracking frequency
+         Resolution 1 kHz"
+::= { thraneTt7090Dashboard 11 }
+
+tt7090ModemTypeName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Modem type name"
+::= { thraneTt7090Dashboard 12 }
+
+tt7090SystemLogon OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        initializing(0),
+        searching(1),
+        acquired(2)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "System logon
+            ~D0R0W0P0S(System Logon)G(none)"
+::= { thraneTt7090Dashboard 13 }
+
+tt7090DualAntennaMode OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+        single(1),
+        master(2),
+        slave(3)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Dual antenna mode"
+::= { thraneTt7090Dashboard 14 }
+
+tt7090DualAntennaStatus OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Dual antenna RF connection status.
+         If greater than 0, the connection is live.
+         Only valid if dual antenna mode is master or slave"
+::= { thraneTt7090Dashboard 15 }
+
+
+
+
+END

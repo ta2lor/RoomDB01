@@ -1,0 +1,1025 @@
+html
+{
+    background-color: #dddddd;
+}
+
+body
+{
+    font-family: Verdana;
+    font-size: 11px;
+    margin: 3px 1px 3px 1px;
+    display : block;
+    background: none repeat scroll 0 0 #F2F5F7;
+    margin: 0 auto 0 auto;
+    text-align: left;
+    width: 1010px;
+}
+
+#main {
+    display: inline-block;
+    width: 100%;
+}
+
+#icon-bar:after
+{
+    clear : both;
+}
+
+.safeset-main
+{
+    padding : 20px;
+}
+
+#content
+{
+    width: 766px;
+    float: left;
+    line-height: 2.0em;
+    margin-top: 15px;
+}
+
+#menu_list
+{
+    margin: 0 26px 0 26px;
+    background-color: #abbbc7;
+    list-style-type: none;
+    padding: 0;
+    list-style: none;
+    float: left;
+    width: 182px;
+    text-align: left;
+    line-height: 15px;
+}
+
+.menu2-space
+{
+    margin-right: 26px;
+    display: inline;
+}
+
+.menu1-space
+{
+    margin-right: 10px;
+    display: inline;
+}
+
+.menu2-space, .menu1-space
+{
+    display: inline;
+    width: 10px;
+    margin-left: 5px;
+}
+
+#menu_list > .first-menu-link
+{
+    margin-top: 0;
+    padding: 0;
+}
+
+#menu_list > .last-menu-link
+{
+    height: 375px;
+}
+
+#menu_list > li > div
+{
+    display: inline;
+}
+
+#menu_list > li > div > a
+{
+    text-decoration:none;
+    color:black;
+    font-weight:bold;
+}
+
+#reboot-head
+{
+    display: block;
+    height: 48px;
+    width: 98%;
+    background-color: #00A4F2;
+}
+
+.menutext1
+{
+    padding: 1em 0em 1em 0;
+    text-transform: uppercase;
+}
+
+.menutext2
+{
+    padding: 1em 0em 1em 0;
+}
+
+#menu_list li
+{
+    background-color: #E5ECEF;
+    margin: 2px 0 0 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.deploy-btns
+{
+    float : left;
+    margin: 1em 1em 0 1em;
+}
+
+#menu_list > .first-menu-link
+{
+    margin-top: 0;
+}
+
+#menu_list > .last-menu-link
+{
+    height: 375px;
+}
+
+#upload_text > p
+{
+    line-height: 1em;
+}
+
+#menu_list > li > a
+{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+#signalicon
+{
+    padding: 0px 0px 0px 5px;
+    margin : 0;
+}
+
+.rx_icontext
+{
+    float:left;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 1.4em 4px 0 2em;
+}
+
+#tx_container
+{
+    display: none;
+}
+
+.tx_icontext
+{
+    float:left;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 1.4em 4px 0.5em 0;
+}
+
+.signalbar,
+.signalbar-none
+{
+    display: inline-block;
+    margin-right: 1px;
+}
+
+.signalbar-status,
+.signalbar-status-none
+{
+    display: inline-block;
+    margin-right: 2px;
+}
+
+.signalbar {
+    background-color: #000000;
+    width:  6px;
+    height: 10px;
+}
+
+.signalbar-none {
+    border: 1px solid #000000;
+    background-color: transparent;
+    width:  4px;
+    height: 8px;
+}
+
+#rx_signal, #tx_signal
+{
+    margin: 1.3em 1em 0 0em;
+    float: left;
+}
+
+.signalbar-status {
+    background-color: #000000;
+    width:  6px;
+    height: 16px;
+}
+
+.signalbar-status-none {
+    border: 1px solid #000000;
+    background-color: transparent;
+    width:  4px;
+    height: 14px;
+}
+
+.topbar_status_container
+{
+    float: left;
+}
+
+.topbar_status_right_container
+{
+    float: right;
+}
+
+.topbar_status_double, .topbar_status_single, #status_hostname
+{
+    font-weight: bold;
+}
+
+.topbar_status_single, #status_hostname
+{
+    margin: 1.4em;
+}
+
+.topbar_status_double
+{
+    margin: 0.4em;
+}
+
+.topbar_status_single
+{
+    margin-top: 15px;
+}
+
+#status_hostname
+{
+    float: left;
+}
+
+#dualant_status
+{
+    width: 9em;
+    float: left;
+    text-align: right;
+    visibility: hidden;
+}
+
+table
+{
+    font-size:11px;
+    font-family:Verdana;
+}
+
+#modem_table, #satellite_table, #modem_edit,#sat_prof_list
+{
+    width: 100%;
+    line-height: 2em;
+}
+
+#modem_table tr, #modem_edit tr, #modem_table th {
+     text-align: left;
+}
+
+#modem_edit td
+{
+  width: 10%;
+}
+
+h1
+{
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+h2
+{
+    font-size: 11px;
+    margin: 0.5em 0 0.5em 0;
+}
+
+.eventlist
+{
+    width: 95%;
+}
+
+#eventlist .firstCol, #notifylist .firstCol
+{
+    text-align: left;
+    width: 20%;
+}
+
+#eventlist .secLastCol, #notifylist .secLastCol
+{
+    text-align: left;
+    width: 40%;
+}
+
+#eventlist .lastCol, #notifylist .lastCol
+{
+    text-align: left;
+    width: auto;
+}
+
+.eventlist tr th, .eventlist tr td
+{
+    text-align: center;
+}
+
+#header
+{
+    height: 48px;
+    margin: 3px 0 3px 0;
+}
+
+#header, #theader, div#top, #progress-fill, #vlan_tbl thead
+{
+    background-color: #00A4F2;
+}
+
+#logo_img
+{
+    float: right;
+}
+
+#icon-bar
+{
+    background-color: #8996A0;
+    height: 4em;
+}
+
+span.flabel, span.fvalue
+{
+    display: inline-block;
+}
+
+span.flabel
+{
+    width: 52%;
+}
+
+span.fvalue
+{
+    width: 48%;
+}
+
+span.satvalue, span.satlabel, span.dmlabel
+{
+    display: inline-block;
+}
+
+span.satlabel
+{
+    width: 30%;
+}
+
+span.dmlabel
+{
+    width: 50%;
+}
+
+/* Allow removal of space in inline-block elements.
+   Apply nofont to a surrounding span and font to text
+   elements inside we want to display. */
+span.nofont
+{
+    font-size: 0px;
+}
+
+span.font
+{
+    font-size: 11px;
+}
+
+div.frow
+{
+   line-height: 2.6em;
+}
+
+.dash_container
+{
+    width: 100%;
+    float: left;
+    display: inline-block;
+}
+
+div.fcol
+{
+    width: 48%;
+    float: left;
+    display: inline-block;
+}
+
+div.sat_row
+{
+    margin-top: 4px;
+}
+
+p.redtext
+{
+    color: red;
+}
+
+p.icon,p#alarmicon
+{
+    float:left;
+    margin:0 auto;
+    padding: 0 0 0 0;
+    vertical-align: middle;
+}
+
+#alarmicon
+{
+    margin: 0.5em 0 0.5em 0.5em;
+    float: left;
+    visibility: hidden;
+    border:0;
+}
+
+#db_infoicon {
+    width: 7%;
+    padding-left: 0.8em;
+    margin-bottom: -0.2em;
+}
+
+#ev_desc_icon {
+    width: 15px;
+}
+
+.event_info {
+    position: absolute;
+    display: inline-block;
+    padding-left: 0.6em;
+    margin-top: -0.6em;
+}
+
+.event_info .event_info_text {
+    visibility: hidden;
+    width: 300px;
+    border-color: #abbbc7;
+    border-style: solid;
+    background-color: #E5ECEF;
+    color: black;
+    text-align: center;
+    padding: 5px 5px;
+
+    /* Position the event info */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    right: 150%;
+}
+
+.event_info:hover .event_info_text {
+    visibility: visible;
+}
+
+.port_row
+{
+    display: block;
+}
+
+p#errortext,.error
+{
+    color: red;
+}
+
+.input-btn-1
+{
+    margin: 1em 1em 0 0;
+}
+
+.input-btn-2-of-2, input[type="reset"]
+{
+    margin: 0 1em 0 1em;
+}
+
+.input-btn-3
+{
+    margin: 0 1em 0 0;
+}
+
+input
+{
+    font-family: Verdana;
+    font-size: 10px;
+}
+
+select
+{
+    font-family: Verdana;
+    font-size: 10px;
+    margin: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.row_label
+{
+    float: left;
+    width: 160px;
+    font-weight: bold;
+}
+
+.pol_flip
+{
+    display: inline-block;
+    width: 70px;
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+.lineup_btn
+{
+    width: 3.2em;
+}
+
+.lineup_col
+{
+    display: inline-block;
+    padding: 0px;
+    width: 44%;
+}
+
+.lineup_label
+{
+    display: block;
+    padding-left: 1px;
+    margin-bottom: 6px;
+}
+
+#offset_label
+{
+    padding-left: 4px;
+}
+
+#target_label
+{
+    padding-left: 35px;
+}
+
+#ang_label
+{
+    padding-left: 2px;
+}
+
+#label_row
+{
+    padding: 0px;
+    margin-top: 10px;
+}
+
+.lineup_input
+{
+    width: 40px;
+    text-align: right;
+    padding-right: 6px;
+    vertical-align: middle;
+}
+
+#rffreq
+{
+    width: 70px;
+}
+
+.pol-btn-hidden
+{
+    visibility: hidden;
+}
+
+.lineup_row
+{
+    margin-bottom: 3px;
+    padding: 3px;
+    vertical-align: middle;
+}
+
+.curr_lineup_pos
+{
+    display: inline-block;
+    border: 1px solid gray;
+    border-radius: 4px;
+    width: 85px;
+    vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+    padding: 0px;
+    text-align: center;
+    background-color: white;
+}
+
+#lineup_box
+{
+    width: 95%;
+    margin-top: 10px;
+}
+
+#status_container
+{
+    margin-bottom: 20px;
+    padding: 3px;
+}
+
+#status_label
+{
+    float: left;
+    width: 16%;
+}
+
+#lineup_status
+{
+    float: left;
+    padding: 0px;
+}
+
+#zone_status
+{
+    float: right;
+    padding: 0px;
+}
+
+#lineup_form input
+{
+    margin-right: 2px;
+}
+
+#freq_lineup_row
+{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.radio_span, .radio_span label, .radio_span input, .checkbox_span, #rffreq
+{
+    vertical-align: middle;
+}
+
+.radio_span
+{
+    margin-right: 8px;
+}
+
+.radio_span label
+{
+    margin-left: 2px;
+}
+
+.checkbox_span
+{
+    margin-left: 5px;
+}
+
+#save_status
+{
+    margin-top: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+#deactivate_lineup
+{
+    margin-right: 40px;
+}
+
+#upload_text
+{
+    display: block;
+    width: 50%;
+}
+
+#upload_text > p
+{
+    line-height: 15px;
+}
+
+#ajax_response_error
+{
+    font-size: 12px;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+#cw_freq_info
+{
+    padding-top: 6px;
+    margin-bottom: 10px;
+}
+
+#progress-header
+{
+    padding: 10px;
+}
+
+#progress-bar, .progress-bar
+{
+    position: relative;
+    width: 600px;
+    margin-left: 200px;
+    height: 1.5em;
+    border: 1px solid gray;
+    background-color: #fefefe;
+    text-align: center;
+    margin-top: 140px;
+    margin-bottom:660px;
+    line-height: 1.5em;
+}
+
+#reboot-text
+{
+    border: 0px;
+    background-color: #F2F5F7;
+}
+
+#azi-progress-bar
+{
+    width: 120px;
+    margin: 0px;
+}
+
+div#cov_row
+{
+    margin-top: -10px;
+    margin-bottom: 0px;
+    margin-left: 3px;
+    display:none;
+}
+
+.cov_warning
+{
+    color: red;
+}
+
+#progress-text
+{
+    position: absolute;
+    display: block;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+#progress-fill
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+}
+
+#clear-bg
+{
+    display: inline-block;
+}
+
+#expimp_result_msg
+{
+    margin-top: 30px;
+}
+
+.sitemap_link
+{
+    text-decoration: none;
+    color: #000000;
+}
+
+#sitemap_list
+{
+    list-style: none;
+    line-height: 2em;
+    padding : 0px;
+}
+.sitemap-level1
+{
+    font-weight: bold;
+}
+.sitemap-level2
+{
+    padding-left: 14px;
+}
+
+#network_hostname
+{
+  display:block;
+}
+
+.network_lan
+{
+   width : 50%;
+   display: inline-block;
+   vertical-align: top;
+}
+
+#ports:after
+{
+   clear: both;
+   content: "";
+   display: block;
+}
+
+.admin_col, .reports_col, .helpd_col, .email_col, .wlan_col, .scm_col, .self_test_col
+{
+    width: 25%;
+    display: inline-block;
+    line-height: 3em;
+}
+
+#network_content
+{
+  vertical-align: top;
+}
+
+#ports
+{
+    margin-bottom: 5px;
+}
+
+.net_col
+{
+    width: 40%;
+    display: inline-block;
+    line-height: 3em;
+}
+
+#ports
+{
+    width: 100%;
+}
+
+#dns_container, #gw_container, #zconf_container, #hostname_container
+{
+    width: 50%;
+}
+
+.net_radio {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 1px;
+    margin-right: 2px;
+    width:16px;
+  }
+
+/** Blocking zones **/
+table.bz_table td, table.bz_table th
+{
+    padding: 0em 1em;
+}
+
+.uperms_col
+{
+    width: 25%;
+    display: inline-block;
+    padding: 0px;
+    line-height: 3em;
+}
+
+.nav_col
+{
+    width: 25%;
+    display: inline-block;
+    padding: 0px;
+    line-height: 34px;
+}
+
+.uperms_radio {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0em 0.2em 0em 2em;
+}
+
+#vsat_expimp {
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+    display:inline-block;
+    width:45%;
+}
+
+#vlan_tbl {
+     border-collapse: collapse;
+     margin-top: 25px;
+}
+
+#vlan_tbl td, #vlan_tbl th {
+     border: 1px solid #8996A0;
+     font-size: 1em;
+     padding: 3px 7px 2px;
+}
+
+#vlan_tbl thead
+{
+     padding-bottom: 4px;
+     padding-top: 5px;
+     text-align: left;
+}
+
+#vlan_tbl tr.odd td {
+     background-color: #DDDDDD;
+     color: #000000;
+}
+
+#deploy_status .navbar-text
+{
+    margin-left: 30px;
+}
+
+.deploy_button
+{
+    width: 7em;
+    font-size: 10px; /* Same as <input> */
+    font-family: Verdana;
+}
+
+.switch_set_label
+{
+    display: inline-block;
+    margin-right: 2px;
+    width: 24%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.switch_set_sw_ver
+{
+    display: inline-block;
+    width: 33%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.self_test_but
+{
+    margin-bottom: 1.5em;
+}
+
+#restart_info
+{
+    color: red;
+}
+
+#longitude, #latitude, #altitude, #compass
+{
+    width: 80px;
+}
+
+#rollback_info
+{
+    margin-left: 4px;
+}
+
+#reboot_hdr
+{
+    font-weight: bold;
+}
+
+#help_contact
+{
+    line-height: 34px;
+}
+
+#xim_table
+{
+    width: 95%;
+    line-height: 1em;
+}
+
+#xim_table td, #xim_table th
+{
+    padding-bottom: 1.0em;
+    text-align: left;
+    width: 30%;
+}
+
+#sat_prof_list > tbody > tr:first-child
+{
+    font-weight : bold;
+}
+
+#sat_prof_list td {
+    width: 10%;
+    text-align: left;
+}
+
+.mobile_switch_btn
+{
+    margin-top : 11px;
+    margin-left: 11px;
+}
+
+#ref_sat_div select
+{
+    margin-right : 10px
+}
+
+#stop
+{
+    background-color: #FF0000;
+    float: right;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    margin : 1.3em 0 0 0;
+}
+
+.initially-hidden, #modem_reset_div, #external_io_div, #modem_access_div
+{
+    display: none;
+}

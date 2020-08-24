@@ -1,0 +1,237 @@
+var ACU_STATUS_POLL_TIME = 5000;
+var LOST_ACU_STATUS_MAX = 5;
+var lost_acu_status_cnt = 0;
+
+var acu_poll_timer = null;
+var report_status_timer = null;
+
+var rssi_blocks = 0;
+var tx_blocks = 0;
+
+var stat_dot_cnt = {
+    value: 0
+};
+var diag_dot_cnt = {
+    value: 0
+};
+var dots = ".....";
+var status_cb = null;
+
+function get_report_status_msg(status) {
+    var msg = LibAcu.dict("Internal error ");
+    if (status == -1) {
+        msg = "";
+    } else if (status == 1) {
+        msg = LibAcu.dict("Processing and sending report");
+    } else if (status == 2) {
+        msg = LibAcu.dict("Report has been sent");
+    } else if (status == 3) {
+        msg = LibAcu.dict("Failed to send report");
+    }
+    return msg;
+}
+
+function do_report_cb(rsp) {
+    // If status is not ongoing, then stop polling status
+    if (rsp.rstat.status == 0 && rsp.rdiag.status == 0) {
+        poll_report_status_stop();
+        stat_dot_cnt.value = 0;
+        diag_dot_cnt.value = 0;
+
+        $("#status_rdiag, #status_rstat").text("");
+        $("#rstat :input,#rdiag :input").removeAttr("disabled");
+        return;
+    }
+
+    // Insert status in HTML if it is present in returned request
+    if (rsp.rdiag.status != 0) {
+        var msg = get_report_status_msg(rsp.rdiag.status);
+        $("#status_rdiag").text(msg + gen_dots(rsp.rdiag.status, diag_dot_cnt));
+
+        if (rsp.rdiag.status == 2 || rsp.rdiag.status == 3) {
+            /* Reset */
+            var data = {
+                rdiag: {
+                    status: -1
+                }
+            };
+
+            LibAcu.getJSON("ajax_report", "set_reports", {
+                json: JSON.stringify(data)
+            });
+            $("#errortext").text("");
+        }
+    }
+    if (rsp.rstat.status != 0) {
+        var msg = get_report_status_msg(rsp.rstat.status);
+        $("#status_rstat").text(msg + gen_dots(rsp.rstat.status, diag_dot_cnt));
+
+        if (rsp.rstat.status == 2 || rsp.rstat.status == 3) {
+            /* Reset */
+            var data = {
+                rstat: {
+                    status: -1
+                }
+            };
+            LibAcu.getJSON("ajax_report", "set_reports", {
+                json: JSON.stringify(data)
+            });
+            $("#errortext").text("");
+        }
+    }
+}
+
+function gen_dots(status_code, dot_cnt) {
+    // Increment dot count if status is ongoing
+    if (status_code == 1)
+        dot_cnt.value = dot_cnt.value % 5 + 1;
+    return dots.substr(0, dot_cnt.value);
+}
+
+function get_report_status() {
+    LibAcu.getJSON('ajax_report', 'get_reports', null, do_report_cb);
+}
+
+function poll_report_status_start() {
+    // Start polling report status
+    if (report_status_timer == null)
+        report_status_timer = self.setInterval(function() {
+            get_report_status()
+        }, 3000);
+}
+
+function poll_report_status_stop() {
+    window.clearInterval(report_status_timer);
+    report_status_timer = null;
+}
+
+function do_status_cb(rsp) {
+
+    if (typeof(rsp) != 'object') {
+        /* On login systems, the ajax does not fail, but the info is invalid.
+        The cookie has expired... */
+        do_status_err_cb();
+        return;
+    }
+
+    /* Reset error counter. */
+    lost_acu_status_cnt = 0;
+
+    if (rsp.events > 0) {
+        $("#alarmicon").css("visibility", "visible");
+    } else {
+        $("#alarmicon").css("visibility", "hidden");
+    }
+
+    // Update RSSI blocks
+    if (rsp.adu.rssi_blocks != rssi_blocks) {
+        rssi_blocks = rsp.adu.rssi_blocks;
+        $("#rx_signal").empty();
+        var str = "";
+        for (var i = 0; i < 7; i++) {
+            if (i < rssi_blocks) {
+                str += '<span class="signalbar-status"></span>';
+            } else {
+                str += '<span class="signalbar-status-none"></span>';
+            }
+        }
+        $("#rx_signal").append(str);
+    }
+
+    if (!("gx" in syscfg.rf) && !("tria" in syscfg.rf)) {
+        if ($("#tx_container").css('display') == 'none') {
+            /* Don't show TX bars in GX or TRIA systems */
+            $("#tx_container").show();
+        }
+
+        //Update tx power blocks
+        if (rsp.adu.tx_blocks != tx_blocks) {
+            tx_blocks = rsp.adu.tx_blocks;
+
+            /* Located on status icon bar. */
+            $("#tx_signal").empty();
+            var str = "";
+            for (var i = 0; i < 4; i++) {
+                if (i < tx_blocks) {
+                    str += '<span class="signalbar-status"></span>';
+                } else {
+                    str += '<span class="signalbar-status-none"></span>';
+                }
+            }
+            $("#tx_signal").append(str);
+        }
+    }
+
+    if (rsp.dual.enabled) {
+        $("#dualant_status").text(rsp.dual.status);
+        $("#dualant_status").css("visibility", "visible");
+    } else {
+        $("#dualant_status").css("visibility", "hidden");
+    }
+
+    if (typeof(Deploy) != 'undefined') {
+        Deploy.update(rsp);
+    }
+
+    $("#sys_status").text(rsp.status);
+
+    if (status_cb)
+        status_cb.fun(rsp)
+}
+
+function do_status_err_cb() {
+    // lost_acu_status_cnt++;
+    // if (lost_acu_status_cnt > LOST_ACU_STATUS_MAX)
+    //     start_reboot_handler(false);
+}
+
+function acu_status_req() {
+    lost_acu_status_cnt++;
+    // if (lost_acu_status_cnt > LOST_ACU_STATUS_MAX)
+    //     start_reboot_handler(false);
+
+    args = {
+        "ajaxMod": "ajax_status",
+        "ajaxReq": "get_status"
+    }
+
+    if (status_cb && "name" in status_cb)
+    {
+        var t = {};
+        t[status_cb.name] = 1;
+
+        args.json = JSON.stringify(t);
+    }
+
+    $.ajax({
+        url: window.location.pathname,
+        success: do_status_cb,
+        error: do_status_err_cb,
+        data: args
+    });
+}
+
+function register_status_cb(cb) {
+    status_cb = cb;
+}
+
+function poll_acu_status_start() {
+    // Start polling status and activate if not already running
+    if (acu_poll_timer != null) return;
+    acu_poll_timer = self.setInterval(function() {
+        acu_status_req();
+    }, ACU_STATUS_POLL_TIME);
+}
+
+function poll_acu_status_stop() {
+    if (acu_poll_timer == null) return;
+    // Stop polling status
+    window.clearInterval(acu_poll_timer);
+    acu_poll_timer = null;
+}
+
+$(window).ready(function() {
+    do_status_cb(json_status);
+    acu_status_req();
+    poll_acu_status_start();
+});

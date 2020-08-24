@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+
+<!-- Mirrored from 213.234.126.193:8083/c?pageId=helpdesk by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Aug 2020 07:16:03 GMT -->
+<head profile="http://www.w3.org/2005/10/profile">
+<title>SAILOR 800 VSAT Ku</title>
+
+<link type='text/css' rel='stylesheet' href='css/style.css'/>
+
+<link rel="shortcut icon" href="images/favicon.ico"/>
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+<meta http-equiv="PRAGMA" content="NO-CACHE"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="Author" content="Thrane &amp; Thrane"/>
+<meta name="copyright" content="Thrane &amp; Thrane 2010"/>
+<!--[if IE 7]>
+<link type='text/css' rel='stylesheet' href='/css/ie7.css?1524407287'/>
+<script type='text/javascript' src='/js/lib/json2_lib.js?1524407287'></script>
+<![endif]-->
+<script type="text/javascript" src="js/lib/jquery-1.11.1ec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/libacuec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/reboot_handlerec9a.js?1524407287"></script>
+
+<script type="text/javascript" src="js/ajax_requestsec9a.js?1524407287"></script>
+<script type="text/javascript">
+json_status = {"adu":{"rssi_blocks":7,"tx_blocks":4},"status":"Tracking","dual":{"enabled":1,"status":"Slave: Active"},"dep_status":"Deployed","events":0};
+syscfg = {"sys_type":{"mvsat":{}},"rf":{"ku":{}},"dual":{},"motors":{"azi":{},"ele":{},"xele":{},"pol":{}},"xim":{},"heading":{},"modem":{},"statistics":{}};
+</script>
+
+</head>
+<body>
+<div id="header">
+    <img id="logo_img" alt="COBHAM" src="images/cobham_logo.png" name="logo_img">
+</div>
+<div id="icon-bar">
+    <div>
+        <div class="rx_icontext">RX :</div>
+        <div id="rx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <div id="tx_container">
+        <div class="tx_icontext">TX :</div>
+        <div id="tx_signal"><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span><span class="signalbar-status-none"></span></div>
+    </div>
+    <a href="c5f33.html?pageId=event_list">
+        <img id="alarmicon" alt="ALARM" src="images/event_warning.png">
+    </a>
+
+
+   <div class="topbar_status_container">
+
+
+        <div class="topbar_status_single" id="sys_status"></div>
+
+    </div>
+    <div class="topbar_status_right_container">
+
+        <div class="topbar_status_single" id="dualant_status"></div>
+
+        <div id="status_hostname">ACU-PS - SAILOR 800 VSAT Ku</div>
+    </div>
+
+</div>
+<div id="main">
+<ul id="menu_list">
+<li class="menutext1 first-menu-link"><div class="menu1-space">&nbsp;&nbsp;</div></li>
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c5b6d.html?pageId=dashboard">Dashboard</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c3861.html?pageId=settings">Settings</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c4660.html?pageId=service">Service</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="c0683.html?pageId=administration">Administration</a></div>
+</li>
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="ca5c9.html?pageId=helpdesk">Helpdesk</a></div>
+</li>
+
+
+<li class="menutext2">
+<div class="menu2-space">&#x25cf;</div><div><a href= "cd3f8.html?pageId=support">Support</a></div>
+</li>
+
+<li class="menutext2">
+<div class="menu2-space">&nbsp;&nbsp;</div><div><a href= "c5f33.html?pageId=event_list">Event list</a></div>
+</li>
+
+
+
+<li class="menutext1">
+<div class="menu1-space">&nbsp;&nbsp;</div><div><a href="cd8f6.html?pageId=site_map">Site map</a></div>
+</li>
+
+
+<li class="menutext1 last-menu-link">
+  <div class="menu1-space">&nbsp;&nbsp;</div>
+</li>
+</ul>
+<div id="content" class="Support"><h1>Support</h1><script type="text/javascript" src="js/definesec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/validateec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/helpdeskec9a.js?1524407287"></script>
+<script type="text/javascript" src="js/supportec9a.js?1524407287"></script>
+<script type="text/javascript">
+diag_json = {"vmu":0,"buc":0};
+</script>
+
+<h2>Contact</h2>
+
+<div id="help_contact">No support contact specified</div>
+
+
+
+
+
+<h2>Mib file</h2>
+<p>
+<a href='mibs/thrane_tt7080_all_SMIv2.mib'>Download MIB file</a>
+</p>
+
+
+
+
+<h2>Legal information</h2>
+<p>
+<a href="c1fef.html?pageId=helpdesk&amp;oper=legal_info">Legal notices</a>
+</p>
+
+<script type="text/javascript">
+function please_wait(field) {
+    var f = $(field);
+    f.show();
+    f.text("Please wait while report is being generated...");
+    setTimeout(function() { f.text("") }, 2000);
+}
+</script>
+
+<h2>Download reports</h2>
+<div id=helpdesk_reports>
+    <form name="generate_report" method="post"
+        action="http://213.234.126.193:8083/c?pageId=download&amp;type=diag"
+        onsubmit='please_wait("#diag_status");'>
+        <span class=helpd_col>
+            Diagnostics report
+        </span>
+        <input class="input-btn-1" type="submit"
+            name="save_report" value="Download">
+        <span id="diag_status"></span>
+    </form>
+</div>
+
+
+<div id=helpdesk_statistics>
+    <form name="stat_dl" method="post"
+        action="http://213.234.126.193:8083/c?pageId=download&amp;type=stat"
+        onsubmit='please_wait("#stat_status");'>
+        <span class='helpd_col'>
+            Statistics report
+        </span>
+        <select name="dl_interval">
+            
+            <option  value="24">
+            day
+            </option>
+            
+            <option  value="168">
+            week
+            </option>
+            
+            <option  value="720">
+            month
+            </option>
+            
+        </select>
+        <input class="input-btn-2-of-2" type="submit" name="dl_stat" value="Download">
+        <span id="stat_status"></span>
+    </form>
+</div>
+
+
+<div>
+    <form id="diag">
+        <h2>Extra diagnostic log</h2>
+        <div class="reports_div">
+            <div>
+                <span class=reports_col>Modem</span>
+                <input type="checkbox" id="enable_diag_vmu">
+            </div>
+            
+        </div>
+        <div class="reports_div">
+            <span class="helpd_col">Apply settings</span>
+            <input id="apply_diag"
+            type="submit" value="Apply">
+            <span id='status_diag'></span>
+        </div>
+    </form>
+</div>
+</div></div>
+</body>
+
+<!-- Mirrored from 213.234.126.193:8083/c?pageId=helpdesk by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Aug 2020 07:16:14 GMT -->
+</html>

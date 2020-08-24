@@ -1,0 +1,83 @@
+function SatProfileList() {};
+
+SatProfileList.activate = function(idx, page, activate_alert) {
+    if (activate_alert != "" && !confirm(activate_alert))
+        return;
+
+    var json = JSON.stringify({
+        idx: idx
+    });
+    if (!json) return false;
+
+    var req = {
+        json: json
+    };
+
+    LibAcu.getJSON("ajax_sat_profile", "activate_profile", req, function(rsp) {
+        if (rsp.err != 0)
+            alert(LibAcu.dict("Could not activate satellite profile (err:" + rsp.err + ")"));
+        else
+            location.reload();
+    });
+}
+
+SatProfileList.deleteProf = function(idx, page, delete_alert) {
+    if (!confirm(delete_alert))
+        return;
+
+    var json = JSON.stringify({
+        idx: idx
+    });
+    if (!json) return false;
+
+    var req = {
+        json: json
+    };
+
+    LibAcu.getJSON("ajax_sat_profile", "delete_profile", req, function(rsp) {
+        if (rsp.err != 0)
+            alert(LibAcu.dict("Could not delete satellite profile (err:" + rsp.err + ")"));
+        else
+            location.reload();
+    });
+}
+
+$(window).load(function() {
+    if ("ref_satellites" in satellite_page) {
+        if (svc_profiles.list.profs.length < 1) {
+            $("#ref_sat_div form").remove();
+            $("#ref_sat_div").append("No service profiles found");
+        } else {
+            $("#ref_sat").append('<option value="0">None</option>');
+            $.each(svc_profiles.list.profs, function(idx, val) {
+                $("#ref_sat").append('<option value="' + val.id + '">' + val.name + '</option>');
+            });
+            $("#ref_sat").val(sat_profile_list.sat_profiles.ref_sat);
+        }
+
+        $("form").submit(function() {
+            $('form :input').prop('disabled', 'disabled');
+
+            var json = JSON.stringify({
+                idx: $("#ref_sat").val()
+            });
+            if (!json) return false;
+
+            var req = {
+                json: json
+            };
+
+            LibAcu.getJSON("ajax_sat_profile", "ref_satellite_select", req, function(rsp) {
+
+                /* Use generic save message */
+                LibAcu.msg_with_timeout(null, "Reference satellite " + $("#ref_sat option:selected").text() +
+                    ' selected');
+
+                $('form :input').removeAttr('disabled');
+            });
+            return false;
+        });
+    } else {
+        $("#ref_sat_div").hide();
+    }
+});
